@@ -1,14 +1,17 @@
 package com.hostalmanagement.app.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
-public class Habitaciones {
+public class Habitacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,9 @@ public class Habitaciones {
     @Enumerated(EnumType.STRING)
     private EstadoHabitacion estado;
 
+    @OneToMany(mappedBy = "habitacion")
+    private List<Reserva> reservas;
+
     private enum EstadoHabitacion {
         DISPONIBLE,
         OCUPADO,
@@ -29,10 +35,10 @@ public class Habitaciones {
         MANTENIMIENTO
     };
 
-    public Habitaciones() {
+    public Habitacion() {
     }
 
-    public Habitaciones(int numero, String tipo, int capacidad, double tarifaBase, EstadoHabitacion estado) {
+    public Habitacion(int numero, String tipo, int capacidad, double tarifaBase, EstadoHabitacion estado) {
         this.numero = numero;
         this.tipo = tipo;
         this.capacidad = capacidad;
@@ -90,9 +96,9 @@ public class Habitaciones {
 
     @Override
     public String toString() {
-        return "[Id=" + getId() + ", Numero=" + getNumero() + ", Tipo=" + getTipo()
+        return "Habitacion{Id=" + getId() + ", Numero=" + getNumero() + ", Tipo=" + getTipo()
                 + ", Capacidad=" + getCapacidad() + ", TarifaBase=" + getTarifaBase() + ", Estado="
-                + getEstado() + "]";
+                + getEstado() + "}";
     }
 
 }

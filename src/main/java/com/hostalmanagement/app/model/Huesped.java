@@ -1,13 +1,15 @@
 package com.hostalmanagement.app.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class Huespedes {
+public class Huesped {
     @Id
     @NotNull
     private String nif;
@@ -18,11 +20,14 @@ public class Huespedes {
     private String telefono;
     private LocalDateTime fechaRegistro;
 
-    public Huespedes() {
+    @OneToMany(mappedBy = "huesped")
+    private List<Reserva> reservas;
+
+    public Huesped() {
         this.fechaRegistro = LocalDateTime.now();
     }
 
-    public Huespedes(@NotNull String nif, String nombre, String apellidos, String email, String telefono) {
+    public Huesped(@NotNull String nif, String nombre, String apellidos, String email, String telefono) {
         this.nif = nif;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -81,9 +86,9 @@ public class Huespedes {
 
     @Override // as a JSON
     public String toString() {
-        return "[ NIF=" + getNIF() + ", Nombre=" + getNombre() + ",Apellidos=" + getApellidos()
+        return "Huesped{ NIF=" + getNIF() + ", Nombre=" + getNombre() + ",Apellidos=" + getApellidos()
                 + ", Email=" + getEmail() + ",Telefono()=" + getTelefono() + ", FechaRegistro="
-                + getFechaRegistro() + "]";
+                + getFechaRegistro() + "}";
     }
 
 }
