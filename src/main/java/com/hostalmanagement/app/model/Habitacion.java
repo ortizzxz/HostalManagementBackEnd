@@ -28,7 +28,7 @@ public class Habitacion {
     @OneToMany(mappedBy = "habitacion")
     private List<Reserva> reservas;
 
-    private enum EstadoHabitacion {
+    public enum EstadoHabitacion {
         DISPONIBLE,
         OCUPADO,
         EN_LIMPIEZA,
