@@ -1,51 +1,44 @@
 package com.hostalmanagement.app.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
+@Table(name = "reserva")
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL)
-    private CheckInOut checkInOut;
-
-    @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL)
-    private Factura factura;
-
-    // Relación @ManyToOne: Muchas Reservas están asociadas con un Huesped
     @ManyToOne
-    @JoinColumn(name = "NIFHuesped")
-    private Huesped huesped;
-
-    // Relación @ManyToOne: Muchas Reservas están asociadas con una Habitacion
-    @ManyToOne
-    @JoinColumn(name = "idHabitacion")
+    @JoinColumn(name = "idHabitacion", nullable = false)
     private Habitacion habitacion;
+
+    @Column(nullable = false)
+    private LocalDate fechaEntrada;
+
+    @Column(nullable = false)
+    private LocalDate fechaSalida;
 
     @Enumerated(EnumType.STRING)
     private EstadoReserva estado;
 
-    public Reserva() {}
+    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ReservaHuesped> huespedes;
 
-    public Reserva(Huesped huesped, Habitacion habitacion, EstadoReserva estado) {
-        this.huesped = huesped;
-        this.habitacion = habitacion;
-        this.estado = estado;
+    public enum EstadoReserva{
+        CONFIRMADA, CANCELADA, COMPLETADA
+    }
+    
+    public Reserva() {
     }
 
-    private enum EstadoReserva {
-        CONFIRMADA, CANCELADA, COMPLETADA
+    public Reserva(Habitacion habitacion, LocalDate fechaEntrada, LocalDate fechaSalida, EstadoReserva estado) {
+        this.habitacion = habitacion;
+        this.fechaEntrada = fechaEntrada;
+        this.fechaSalida = fechaSalida;
+        this.estado = estado;
     }
 
     public Long getId() {
@@ -56,20 +49,36 @@ public class Reserva {
         this.id = id;
     }
 
-    public Huesped getHuesped() {
-        return huesped;
-    }
-
-    public void setHuesped(Huesped huesped) {
-        this.huesped = huesped;
-    }
-
     public Habitacion getHabitacion() {
         return habitacion;
     }
 
     public void setHabitacion(Habitacion habitacion) {
         this.habitacion = habitacion;
+    }
+
+    public LocalDate getFechaEntrada() {
+        return fechaEntrada;
+    }
+
+    public void setFechaEntrada(LocalDate fechaEntrada) {
+        this.fechaEntrada = fechaEntrada;
+    }
+
+    public LocalDate getFechaSalida() {
+        return fechaSalida;
+    }
+
+    public void setFechaSalida(LocalDate fechaSalida) {
+        this.fechaSalida = fechaSalida;
+    }
+
+    public Set<ReservaHuesped> getHuespedes() {
+        return huespedes;
+    }
+
+    public void setHuespedes(Set<ReservaHuesped> huespedes) {
+        this.huespedes = huespedes;
     }
 
     public EstadoReserva getEstado() {
@@ -79,11 +88,4 @@ public class Reserva {
     public void setEstado(EstadoReserva estado) {
         this.estado = estado;
     }
-
-    @Override
-    public String toString() {
-        return "Reserva{getId=" + getId() + ", Huesped=" + getHuesped() + ", Habitacion=" + getHabitacion()
-                + ", Estado=" + getEstado() + "}";
-    }
-
 }

@@ -1,7 +1,7 @@
 package com.hostalmanagement.app.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,7 +21,7 @@ public class Huesped {
     private LocalDateTime fechaRegistro;
 
     @OneToMany(mappedBy = "huesped")
-    private List<Reserva> reservas;
+    private Set<ReservaHuesped> reservas;
 
     public Huesped() {
         this.fechaRegistro = LocalDateTime.now();
