@@ -7,6 +7,7 @@ import com.hostalmanagement.app.model.Huesped;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 public class HuespedDAOImpl implements HuespedDAO{
     @PersistenceContext
@@ -22,17 +23,26 @@ public class HuespedDAOImpl implements HuespedDAO{
     public List<Huesped> findAll(){
         return entityManager.createQuery("from Huesped", Huesped.class).getResultList();
     }
-
+    
     @Override
+    @Transactional
     public void save(Huesped huesped) {
+        entityManager.persist(huesped);
     }
 
     @Override
+    @Transactional
     public void update(Huesped huesped) {
+        entityManager.merge(huesped);
     }
 
     @Override
-    public void delete(Huesped huesped) {
+    @Transactional
+    public void delete(String NIF) {
+        Huesped huesped = findByNIF(NIF);
+        if(huesped != null){
+            entityManager.remove(huesped);
+        }
     }
     
 }

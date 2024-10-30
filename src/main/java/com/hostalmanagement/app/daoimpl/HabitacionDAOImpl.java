@@ -37,11 +37,13 @@ public class HabitacionDAOImpl implements HabitacionDAO {
     }
 
     @Override
+    @Transactional
     public void update(Habitacion habitacion) {
         entityManager.merge(habitacion);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Habitacion habitacion = findById(id);
         if (habitacion != null) {

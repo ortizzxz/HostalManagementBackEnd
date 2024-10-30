@@ -10,5 +10,5 @@ public interface HuespedDAO {
 
     void save(Huesped huesped);
     void update(Huesped huesped);
-    void delete(Huesped huesped);
+    void delete(String NIF);
 }
