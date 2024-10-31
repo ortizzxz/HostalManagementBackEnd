@@ -7,6 +7,7 @@ import com.hostalmanagement.app.model.Anuncio;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 public class AnuncioDAOImpl implements AnuncioDAO {
 
@@ -25,16 +26,19 @@ public class AnuncioDAOImpl implements AnuncioDAO {
     }
 
     @Override
+    @Transactional
     public void save(Anuncio anuncio) {
         entityManager.persist(anuncio);
     }
 
     @Override
+    @Transactional
     public void update(Anuncio anuncio) {
         entityManager.merge(anuncio);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Anuncio anuncio = findById(id);
         if(anuncio != null){

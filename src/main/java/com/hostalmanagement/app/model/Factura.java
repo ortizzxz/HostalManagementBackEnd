@@ -31,7 +31,7 @@ public class Factura {
         this.reserva = reserva;
     }
 
-    private enum EstadoFactura{PENDIENTE, PAGADA, CANCELADA}
+    public enum EstadoFactura{PENDIENTE, PAGADA, CANCELADA}
 
     public Long getId() {
         return id;
