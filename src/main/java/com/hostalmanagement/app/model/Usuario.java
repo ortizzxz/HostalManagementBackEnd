@@ -31,7 +31,7 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private RolEnum rol;
 
-    private enum RolEnum {
+    public enum RolEnum {
         ADMIN, RECEPCION, LIMPIEZA, MANTENIMIENTO
     }
 
