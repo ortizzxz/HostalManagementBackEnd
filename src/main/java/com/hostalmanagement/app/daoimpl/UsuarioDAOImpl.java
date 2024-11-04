@@ -24,6 +24,12 @@ public class UsuarioDAOImpl implements UsuarioDAO{
     }
 
     @Override
+    public List<Usuario> findAll(){
+        return entityManager.createQuery("FROM Usuario u", Usuario.class)
+                .getResultList();
+    }
+
+    @Override
     public List<Usuario> findByApellido(final String apellido) {
         return entityManager.createQuery("FROM Usuario u WHERE u.apellido like :nombre", Usuario.class)
                 .setParameter("apellido", apellido)

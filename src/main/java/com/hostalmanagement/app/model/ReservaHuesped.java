@@ -1,7 +1,5 @@
 package com.hostalmanagement.app.model;
 
-import org.hibernate.annotations.ManyToAny;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -15,7 +13,7 @@ public class ReservaHuesped {
     private Huesped huesped;
 
     @Id
-    @ManyToAny
+    @ManyToOne
     @JoinColumn(name = "idReserva", referencedColumnName = "id")
     private Reserva reserva; 
 
