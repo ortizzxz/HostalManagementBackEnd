@@ -3,6 +3,7 @@ package com.hostalmanagement.app.daoimpl;
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Repository;
 
 import com.hostalmanagement.app.dao.UsuarioDAO;
 import com.hostalmanagement.app.model.Usuario;
@@ -11,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+@Repository
 public class UsuarioDAOImpl implements UsuarioDAO{
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

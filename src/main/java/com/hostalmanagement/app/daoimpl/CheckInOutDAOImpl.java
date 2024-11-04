@@ -3,6 +3,8 @@ package com.hostalmanagement.app.daoimpl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.hostalmanagement.app.dao.CheckInOutDAO;
 import com.hostalmanagement.app.model.CheckInOut;
 
@@ -10,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+@Repository
 public class CheckInOutDAOImpl implements CheckInOutDAO {
 
     @PersistenceContext

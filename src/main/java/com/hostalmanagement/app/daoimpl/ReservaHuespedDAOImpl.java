@@ -2,12 +2,15 @@ package com.hostalmanagement.app.daoimpl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.hostalmanagement.app.dao.ReservaHuespedDAO;
 import com.hostalmanagement.app.model.ReservaHuesped;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+@Repository
 public class ReservaHuespedDAOImpl implements ReservaHuespedDAO{
 
     @PersistenceContext
