@@ -32,7 +32,7 @@ public class Usuario {
     private RolEnum rol;
 
     public enum RolEnum {
-        ADMIN, RECEPCION, LIMPIEZA, MANTENIMIENTO
+        admin, recepcion, limpieza, mantenimiento, unknown
     }
 
     public Usuario() {

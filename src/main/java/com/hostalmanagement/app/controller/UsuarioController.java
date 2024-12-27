@@ -57,6 +57,7 @@ public class UsuarioController {
         }
     }
 
+    // Eliminar un usuario
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
         boolean eliminado = usuarioService.eliminarUsuario(id);

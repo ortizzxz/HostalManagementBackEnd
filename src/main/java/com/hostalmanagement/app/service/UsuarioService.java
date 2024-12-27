@@ -28,8 +28,9 @@ public class UsuarioService {
     }
 
     private UsuarioDTO toDTO(Usuario usuario) {
+        String rolName = usuario.getRol() != null ? usuario.getRol().name().toUpperCase() : "UNKNOWN";
         return new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellido(), usuario.getEmail(),
-                usuario.getRol().name());
+                rolName);
     }
 
     private Usuario toEntity(UsuarioDTO usuarioDTO) {
