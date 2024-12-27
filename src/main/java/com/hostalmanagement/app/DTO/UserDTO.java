@@ -1,18 +1,18 @@
 package com.hostalmanagement.app.DTO;
 
-public class UsuarioDTO {
+public class UserDTO {
     private Long id;
-    private String nombre;
-    private String apellido;
+    private String name;
+    private String lastname;
     private String email;
     private String rol;
 
-    public UsuarioDTO(){}
+    public UserDTO(){}
 
-    public UsuarioDTO(Long id, String nombre, String apellido, String email, String rol) {
+    public UserDTO(Long id, String name, String lastname, String email, String rol) {
         this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
+        this.name = name;
+        this.lastname = lastname;
         this.email = email;
         this.rol = rol;
     }
@@ -25,20 +25,20 @@ public class UsuarioDTO {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getEmail() {

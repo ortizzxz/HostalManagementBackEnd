@@ -10,16 +10,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
-public class Usuario {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotEmpty(message = "El nombre no puede estar vacío")
-    private String nombre;
+    private String name;
 
     @NotEmpty(message = "El apellido no puede estar vacío")
-    private String apellido;
+    private String lastname;
 
     @NotEmpty(message = "El email no puede estar vacío")
     @Email(message = "El email debe tener un formato válido")
@@ -35,12 +35,12 @@ public class Usuario {
         admin, recepcion, limpieza, mantenimiento, unknown
     }
 
-    public Usuario() {
+    public User() {
     }
 
-    public Usuario(String nombre, String apellido, String email, String password, RolEnum rol) {
-        this.nombre = nombre;
-        this.apellido = apellido;
+    public User(String name, String lastname, String email, String password, RolEnum rol) {
+        this.name = name;
+        this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.rol = rol;
@@ -54,20 +54,20 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getEmail() {
@@ -96,8 +96,9 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" +
-                "nombre='" + getNombre() + '\'' +
+        return "User{" +
+                "name='" + getName() + '\'' +
+                ", lastname='" + getLastname() + '\'' +
                 ", email='" + getEmail() + '\'' +
                 ", rol=" + getRol() +
                 '}';
