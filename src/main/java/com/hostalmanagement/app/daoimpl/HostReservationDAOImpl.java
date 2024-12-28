@@ -11,7 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 @Repository
-public class ReservaHuespedDAOImpl implements ReservaHuespedDAO{
+public class HostReservationDAOImpl implements HostReservationDAO{
 
     @PersistenceContext
     EntityManager entityManager;

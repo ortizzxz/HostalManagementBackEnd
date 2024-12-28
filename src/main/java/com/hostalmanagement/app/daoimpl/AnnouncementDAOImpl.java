@@ -12,7 +12,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class AnuncioDAOImpl implements AnuncioDAO {
+public class AnnouncementDAOImpl implements AnnouncementDAO {
 
     @PersistenceContext
     EntityManager entityManager;

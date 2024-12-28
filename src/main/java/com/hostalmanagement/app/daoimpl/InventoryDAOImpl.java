@@ -12,7 +12,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class InventarioDAOImpl implements InventarioDAO{
+public class InventoryDAOImpl implements InventoryDAO{
 
     @PersistenceContext
     EntityManager entityManager;

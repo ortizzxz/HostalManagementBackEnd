@@ -12,7 +12,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class FacturaDAOImpl implements FacturaDAO{
+public class BillDAOImpl implements BillDAO{
     
     @PersistenceContext
     EntityManager entityManager;

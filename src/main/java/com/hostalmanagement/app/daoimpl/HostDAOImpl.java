@@ -12,7 +12,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class HuespedDAOImpl implements HuespedDAO{
+public class HostDAOImpl implements HostDAO{
     @PersistenceContext
     EntityManager entityManager;
 

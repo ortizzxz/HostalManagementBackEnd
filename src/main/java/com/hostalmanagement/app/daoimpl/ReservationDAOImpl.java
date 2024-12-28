@@ -12,7 +12,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class ReservaDAOImpl implements ReservaDAO {
+public class ReservationDAOImpl implements ReservationDAO {
 
     @PersistenceContext
     EntityManager entityManager;

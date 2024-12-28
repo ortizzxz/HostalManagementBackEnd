@@ -13,7 +13,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class HabitacionDAOImpl implements HabitacionDAO {
+public class RoomDAOImpl implements RoomDAO {
     @PersistenceContext
     private EntityManager entityManager;
 

@@ -2,16 +2,16 @@ package com.hostalmanagement.app.dao;
 
 import java.util.List;
 
-import com.hostalmanagement.app.model.Inventario;
+import com.hostalmanagement.app.model.Inventory;
 
-public interface InventarioDAO {
+public interface InventoryDAO {
     Inventario findById(Long id);
     
     List<Inventario> findAll();
     List<Inventario> findByKeyword(String item);
     List<Inventario> findByLowLevel();
 
-    void save(Inventario inventario);
-    void update(Inventario inventario);
+    void save(Inventory inventory);
+    void update(Inventory inventory);
     void delete(Long id);
 }
