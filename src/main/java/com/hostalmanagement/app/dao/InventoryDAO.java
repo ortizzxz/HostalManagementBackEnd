@@ -9,7 +9,7 @@ public interface InventoryDAO {
     
     List<Inventory> findAll();
     List<Inventory> findByKeyword(String item);
-    List<Inventory> findByLowLevel();
+    List<Inventory> findByWarningLevel();
 
     void save(Inventory inventory);
     void update(Inventory inventory);

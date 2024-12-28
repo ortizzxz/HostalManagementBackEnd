@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.hostalmanagement.app.dao.HabitacionDAO;
-import com.hostalmanagement.app.model.Habitacion;
-import com.hostalmanagement.app.model.Habitacion.EstadoHabitacion;
+import com.hostalmanagement.app.dao.RoomDAO;
+import com.hostalmanagement.app.model.Room;
+import com.hostalmanagement.app.model.Room.RoomState;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,54 +18,54 @@ public class RoomDAOImpl implements RoomDAO {
     private EntityManager entityManager;
 
     @Override
-    public Habitacion findById(Long id) {
-        return entityManager.find(Habitacion.class, id);
+    public Room findById(Long id) {
+        return entityManager.find(Room.class, id);
     }
 
     @Override
-    public Habitacion findByRoomNumber(Long id) {
-        return entityManager.createQuery("from Habitacion h where h.numero = :id", Habitacion.class)
+    public Room findByRoomNumber(Long id) {
+        return entityManager.createQuery("from Habitacion h where h.numero = :id", Room.class)
                 .setParameter("id", id).getSingleResult();
     }
 
     @Override
-    public List<Habitacion> findAll() {
-        return entityManager.createQuery("from Habitacion", Habitacion.class).getResultList(); 
+    public List<Room> findAll() {
+        return entityManager.createQuery("from Habitacion", Room.class).getResultList(); 
     }
 
     @Override
     @Transactional
-    public void save(Habitacion habitacion) {
-        entityManager.persist(habitacion);
+    public void save(Room room) {
+        entityManager.persist(room);
     }
 
     @Override
     @Transactional
-    public void update(Habitacion habitacion) {
-        entityManager.merge(habitacion);
+    public void update(Room room) {
+        entityManager.merge(room);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        Habitacion habitacion = findById(id);
-        if (habitacion != null) {
-            entityManager.remove(habitacion);
+        Room room = findById(id);
+        if (room != null) {
+            entityManager.remove(room);
         }
     }
 
     @Override
-    public List<Habitacion> findBetweenPrices(Double precioMin, Double precioMax) {
+    public List<Room> findBetweenPrices(Double minPrice, Double maxPrice) {
         return entityManager
-                .createQuery("FROM Habitacion h WHERE h.tarifaBase BETWEEN :precioMin AND :precioMax", Habitacion.class)
-                .setParameter("precioMin", precioMin).setParameter("precioMax", precioMax)
+                .createQuery("FROM Habitacion h WHERE h.tarifaBase BETWEEN :precioMin AND :precioMax", Room.class)
+                .setParameter("precioMin", minPrice).setParameter("precioMax", maxPrice)
                 .getResultList();
     }
 
     @Override
-    public List<Habitacion> findAvailableRooms() {
-        return entityManager.createQuery("FROM Habitacion h WHERE h.estado = :estadoDisponible", Habitacion.class)
-                .setParameter("estadoDisponible", EstadoHabitacion.DISPONIBLE)
+    public List<Room> findAvailableRooms() {
+        return entityManager.createQuery("FROM Habitacion h WHERE h.estado = :estadoDisponible", Room.class)
+                .setParameter("estadoDisponible", RoomState.DISPONIBLE)
                 .getResultList();
     }
 

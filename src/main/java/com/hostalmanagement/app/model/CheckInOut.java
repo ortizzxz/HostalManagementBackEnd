@@ -16,19 +16,18 @@ public class CheckInOut {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "idReserva") // Define la columna de la llave foránea en la tabla check_in_out
-    private Reserva reserva;
+    @JoinColumn(name = "idReserva") 
+    private Reservation reservation;
 
-    private LocalDateTime fechaIn;
-    private LocalDateTime fechaOut;
+    private LocalDateTime inDate;
+    private LocalDateTime outDate;
 
     public CheckInOut() {}
 
-    public CheckInOut(Long id, Reserva reserva, LocalDateTime fechaIn, LocalDateTime fechaOut) {
-        this.id = id;
-        this.reserva = reserva;
-        this.fechaIn = fechaIn;
-        this.fechaOut = fechaOut;
+    public CheckInOut(LocalDateTime inDate, LocalDateTime outDate, Reservation reservation) {
+        this.inDate = inDate;
+        this.outDate = outDate;
+        this.reservation = reservation;
     }
 
     public Long getId() {
@@ -39,34 +38,34 @@ public class CheckInOut {
         this.id = id;
     }
 
-    public Reserva getReserva() {
-        return reserva;
+    public Reservation getReservation() {
+        return reservation;
     }
 
-    public void setReserva(Reserva reserva) {
-        this.reserva = reserva;
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 
-    public LocalDateTime getFechaIn() {
-        return fechaIn;
+    public LocalDateTime getInDate() {
+        return inDate;
     }
 
-    public void setFechaIn(LocalDateTime fechaIn) {
-        this.fechaIn = fechaIn;
+    public void setInDate(LocalDateTime inDate) {
+        this.inDate = inDate;
     }
 
-    public LocalDateTime getFechaOut() {
-        return fechaOut;
+    public LocalDateTime getOutDate() {
+        return outDate;
     }
 
-    public void setFechaOut(LocalDateTime fechaOut) {
-        this.fechaOut = fechaOut;
+    public void setOutDate(LocalDateTime outDate) {
+        this.outDate = outDate;
     }
 
     @Override
     public String toString() {
-        return "CheckInOut{getId()=" + getId() + ", getReserva()=" + getReserva() + ", getFechaIn()=" + getFechaIn()
-                + ", getFechaOut()=" + getFechaOut() + "}";
+        return "CheckInOut{ID=" + getId() + ", Reservation=" + getReservation() + ", In Date=" + getInDate()
+                + ", Out Date=" + getOutDate() + "}";
     }
 
 }

@@ -35,16 +35,16 @@ public class GuestDAOImpl implements GuestDAO{
 
     @Override
     @Transactional
-    public void update(Host host) {
-        entityManager.merge(host);
+    public void update(Guest guest) {
+        entityManager.merge(guest);
     }
 
     @Override
     @Transactional
     public void delete(String NIF) {
-        Host host = findByNIF(NIF);
-        if(host != null){
-            entityManager.remove(host);
+        Guest guest = findByNIF(NIF);
+        if(guest != null){
+            entityManager.remove(guest);
         }
     }
     

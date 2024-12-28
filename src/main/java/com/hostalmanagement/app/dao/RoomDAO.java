@@ -6,11 +6,11 @@ import java.util.List;
 
 
 public interface RoomDAO{
-    Habitacion findById(Long id);
-    Habitacion findByRoomNumber(Long id);
-    List<Habitacion> findAll();
-    List<Habitacion> findBetweenPrices(Double minPrice, Double maxPrice);
-    List<Habitacion> findAvailableRooms();
+    Room findById(Long id);
+    Room findByRoomNumber(Long id);
+    List<Room> findAll();
+    List<Room> findBetweenPrices(Double minPrice, Double maxPrice);
+    List<Room> findAvailableRooms();
 
     void save(Room room);
     void update(Room room);

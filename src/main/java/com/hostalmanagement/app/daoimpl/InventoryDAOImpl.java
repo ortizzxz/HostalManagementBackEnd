@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.hostalmanagement.app.dao.InventarioDAO;
-import com.hostalmanagement.app.model.Inventario;
+import com.hostalmanagement.app.dao.InventoryDAO;
+import com.hostalmanagement.app.model.Inventory;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,45 +18,45 @@ public class InventoryDAOImpl implements InventoryDAO{
     EntityManager entityManager;
 
     @Override
-    public Inventario findById(Long id) {
-        return entityManager.find(Inventario.class, id);
+    public Inventory findById(Long id) {
+        return entityManager.find(Inventory.class, id);
     }
 
     @Override
-    public List<Inventario> findAll() {
-        return entityManager.createQuery("FROM Inventario i", Inventario.class).getResultList();
+    public List<Inventory> findAll() {
+        return entityManager.createQuery("FROM Inventario i", Inventory.class).getResultList();
     }
 
     @Override
-    public List<Inventario> findByKeyword(String item) {
-        return entityManager.createQuery("FROM Inventario i WHERE i.item LIKE :item", Inventario.class)
+    public List<Inventory> findByKeyword(String item) {
+        return entityManager.createQuery("FROM Inventario i WHERE i.item LIKE :item", Inventory.class)
                 .setParameter("item", item)
                 .getResultList();
     }
 
     @Override
-    public List<Inventario> findByLowLevel() {
-        return entityManager.createQuery("FROM Inventario i where i.nivelCritico > i.cantidad", Inventario.class).getResultList();
+    public List<Inventory> findByWarningLevel() {
+        return entityManager.createQuery("FROM Inventario i where i.nivelCritico > i.cantidad", Inventory.class).getResultList();
     }
 
     @Override
     @Transactional
-    public void save(Inventario inventario) {
-        entityManager.persist(inventario);
+    public void save(Inventory inventory) {
+        entityManager.persist(inventory);
     }
 
     @Override
     @Transactional
-    public void update(Inventario inventario) {
-        entityManager.merge(inventario);
+    public void update(Inventory inventory) {
+        entityManager.merge(inventory);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        Inventario inventario = findById(id);
-        if(inventario != null) {
-            entityManager.remove(inventario);
+        Inventory inventory = findById(id);
+        if(inventory != null) {
+            entityManager.remove(inventory);
         }
     }
     

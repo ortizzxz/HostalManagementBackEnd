@@ -64,7 +64,7 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     @Transactional
     public void update(Reservation reservation) {
-        entityManager.merge(Reservation);        
+        entityManager.merge(reservation);        
     }
 
     @Override
