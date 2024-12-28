@@ -29,9 +29,9 @@ public class CheckInOutDAOImpl implements CheckInOutDAO {
     }
 
     @Override
-    public CheckInOut findByReserva(final Long idReserva) {
+    public CheckInOut findByReservation(final Long reservationId) {
         return entityManager.createQuery("FROM checkInOut c WHERE c.idReserva LIKE :idReserva", CheckInOut.class)
-                .setParameter("idReserva", idReserva)
+                .setParameter("idReserva", reservationId)
                 .getSingleResult();
     }
 

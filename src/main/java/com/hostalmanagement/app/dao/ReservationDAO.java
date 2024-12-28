@@ -4,14 +4,14 @@ import java.util.List;
 import com.hostalmanagement.app.model.Reservation;
 
 public interface ReservationDAO {
-    Reserva findById(Long id);
-    List<Reserva> findAll();
+    Reservation findById(Long id);
+    List<Reservation> findAll();
 
-    List<Reserva> findByConfirmed();
-    List<Reserva> findByCanceled();
-    List<Reserva> findByCompleted();
+    List<Reservation> findByConfirmed();
+    List<Reservation> findByCanceled();
+    List<Reservation> findByCompleted();
 
-    Reserva findByRoom(Long roomId);
+    Reservation findByRoom(Long roomId);
 
     void save (Reservation reservation);
     void update (Reservation reservation);

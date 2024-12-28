@@ -5,8 +5,8 @@ import java.util.List;
 import com.hostalmanagement.app.model.Guest;
 
 public interface GuestDAO {
-    Huesped findByNIF(String NIF);
-    List<Huesped> findAll();
+    Guest findByNIF(String NIF);
+    List<Guest> findAll();
 
     void save(Guest guest);
     void update(Guest guest);

@@ -5,11 +5,11 @@ import java.util.List;
 import com.hostalmanagement.app.model.GuestReservation;
 
 public interface GuestReservationDAO {
-    ReservaHuesped findByNIF(String NIF);
-    ReservaHuesped findByReservation(Long rservationId);
-    List<ReservaHuesped> findAll();
+    GuestReservation findByNIF(String NIF);
+    GuestReservation findByReservation(Long reservationId);
+    List<GuestReservation> findAll();
 
-    void save(GuestReservation guestReservation );
+    void save(GuestReservation guestReservations);
     void update(GuestReservation guestReservation);
     void removeByNIF(String NIF);
 

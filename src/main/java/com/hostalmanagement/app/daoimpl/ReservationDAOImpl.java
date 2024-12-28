@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.hostalmanagement.app.dao.ReservaDAO;
-import com.hostalmanagement.app.model.Reserva;
+import com.hostalmanagement.app.dao.ReservationDAO;
+import com.hostalmanagement.app.model.Reservation;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,61 +18,61 @@ public class ReservationDAOImpl implements ReservationDAO {
     EntityManager entityManager;
 
     @Override
-    public Reserva findById(Long id) {
-        return entityManager.find(Reserva.class, id);
+    public Reservation findById(Long id) {
+        return entityManager.find(Reservation.class, id);
     }
 
     @Override
-    public List<Reserva> findAll() {
-        return entityManager.createQuery("from Reserva", Reserva.class).getResultList();
+    public List<Reservation> findAll() {
+        return entityManager.createQuery("from Reserva", Reservation.class).getResultList();
     }
 
     @Override
-    public List<Reserva> findByConfirmadas() {
-        return entityManager.createQuery("from Reserva r where r.estado like :estado", Reserva.class)
-                .setParameter("estado", Reserva.EstadoReserva.CONFIRMADA)
+    public List<Reservation> findByConfirmed() {
+        return entityManager.createQuery("from Reserva r where r.estado like :estado", Reservation.class)
+                .setParameter("estado", Reservation.ReservationState.CONFIRMADA)
                 .getResultList();
     }
 
     @Override
-    public List<Reserva> findByCanceladas() {
-        return entityManager.createQuery("FROM Reserva r where r.estado like :estado", Reserva.class)
-                .setParameter("estado", Reserva.EstadoReserva.CANCELADA)
+    public List<Reservation> findByCanceled() {
+        return entityManager.createQuery("FROM Reserva r where r.estado like :estado", Reservation.class)
+                .setParameter("estado", Reservation.ReservationState.CANCELADA)
                 .getResultList();
     }
 
     @Override
-    public List<Reserva> findByCompletadas() {
-        return entityManager.createQuery("FROM Reserva r where r.estado like :estado", Reserva.class)
-                .setParameter("estado", Reserva.EstadoReserva.COMPLETADA)
+    public List<Reservation> findByCompleted() {
+        return entityManager.createQuery("FROM Reserva r where r.estado like :estado", Reservation.class)
+                .setParameter("estado", Reservation.ReservationState.COMPLETADA)
                 .getResultList();
     }
 
     @Override
-    public Reserva findByRoom(Long idHabitacion) {
-        return entityManager.createQuery("FROM Reserva R WHERE idHabitacion like :idHabitacion", Reserva.class)
-                .setParameter("idHabitacion", idHabitacion)
+    public Reservation findByRoom(Long roomId) {
+        return entityManager.createQuery("FROM Reserva R WHERE idHabitacion like :idHabitacion", Reservation.class)
+                .setParameter("idHabitacion", roomId)
                 .getSingleResult();
     }
 
     @Override
     @Transactional
-    public void save(Reserva reserva) {
-        entityManager.persist(reserva);        
+    public void save(Reservation reservation) {
+        entityManager.persist(reservation);        
     }
 
     @Override
     @Transactional
-    public void update(Reserva reserva) {
-        entityManager.merge(reserva);        
+    public void update(Reservation reservation) {
+        entityManager.merge(Reservation);        
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        Reserva reserva = findById(id);
-        if(reserva != null){
-            entityManager.remove(reserva);
+        Reservation reservation = findById(id);
+        if(reservation != null){
+            entityManager.remove(reservation);
         }
     }
 

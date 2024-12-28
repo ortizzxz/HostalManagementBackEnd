@@ -5,12 +5,12 @@ import java.util.List;
 import com.hostalmanagement.app.model.Bill;
 
 public interface BillDAO {
-    Factura findById(Long id);
-    List<Factura> findByRoomId(Long idReservation);
-    List<Factura> findAll();
-    List<Factura> findAllPending();
-    List<Factura> findAllCanceled();
-    List<Factura> findAllPaid();
+    Bill findById(Long id);
+    List<Bill> findByRoomId(Long idReservation);
+    List<Bill> findAll();
+    List<Bill> findAllPending();
+    List<Bill> findAllCanceled();
+    List<Bill> findAllPaid();
 
     void save(Bill bill);
     void delete(Long id);

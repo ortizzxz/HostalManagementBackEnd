@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.hostalmanagement.app.dao.FacturaDAO;
-import com.hostalmanagement.app.model.Factura;
+import com.hostalmanagement.app.dao.BillDAO;
+import com.hostalmanagement.app.model.Bill;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,54 +18,54 @@ public class BillDAOImpl implements BillDAO{
     EntityManager entityManager;
     
     @Override
-    public Factura findById(Long id) {
-        return entityManager.find(Factura.class, id);
+    public Bill findById(Long id) {
+        return entityManager.find(Bill.class, id);
     }
 
     @Override
-    public List<Factura> findByRoomId(Long idReserva) {
-        return entityManager.createQuery("FROM Factura f WHERE f.idReserva like :idReserva", Factura.class)
-                .setParameter("idReserva", idReserva)
+    public List<Bill> findByRoomId(Long reservationId) {
+        return entityManager.createQuery("FROM Factura f WHERE f.idReserva like :idReserva", Bill.class)
+                .setParameter("idReserva", reservationId)
                 .getResultList();
     }
     
     @Override
-    public List<Factura> findAll() {
-        return entityManager.createQuery("FROM Factura f", Factura.class).getResultList();
+    public List<Bill> findAll() {
+        return entityManager.createQuery("FROM Factura f", Bill.class).getResultList();
     }
     
     @Override
-    public List<Factura> findAllPendiente() {
-        return entityManager.createQuery("FROM Factura f WHERE f.estado like :estado", Factura.class)
-                    .setParameter("estado", Factura.EstadoFactura.PENDIENTE)
+    public List<Bill> findAllPending() {
+        return entityManager.createQuery("FROM Factura f WHERE f.estado like :estado", Bill.class)
+                    .setParameter("estado", Bill.BillState.PENDIENTE)
                     .getResultList();
     }
 
     @Override
-    public List<Factura> findAllCancelada() {
-        return entityManager.createQuery("FROM Factura f where f.estado like :estado", Factura.class)
-                .setParameter("estado", Factura.EstadoFactura.CANCELADA)
+    public List<Bill> findAllCanceled() {
+        return entityManager.createQuery("FROM Factura f where f.estado like :estado", Bill.class)
+                .setParameter("estado", Bill.BillState.CANCELADA)
                 .getResultList();
     }
 
     @Override
-    public List<Factura> findAllPagada() {
-        return entityManager.createQuery("FROM Factura f where f.estado like :estado", Factura.class)
-                .setParameter("estado", Factura.EstadoFactura.PAGADA).
+    public List<Bill> findAllPaid() {
+        return entityManager.createQuery("FROM Factura f where f.estado like :estado", Bill.class)
+                .setParameter("estado", Bill.BillState.PAGADA).
                 getResultList();
     }
 
     @Override
     @Transactional
-    public void save(Factura factura) {
-        entityManager.persist(factura);
+    public void save(Bill bill) {
+        entityManager.persist(bill);
     }
 
     @Override
     public void delete(Long id) {
-        Factura factura = findById(id);
-        if (factura != null){
-            entityManager.remove(factura);
+        Bill bill = findById(id);
+        if (bill != null){
+            entityManager.remove(bill);
         }
     }
 }

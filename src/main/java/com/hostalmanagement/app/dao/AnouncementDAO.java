@@ -5,8 +5,8 @@ import java.util.List;
 import com.hostalmanagement.app.model.Anouncement;
 
 public interface AnouncementDAO {
-    Anuncio findById(Long id);
-    List<Anuncio> getAllAnouncements();
+    Anouncement findById(Long id);
+    List<Anouncement> getAllAnouncements();
 
     void save(Anouncement anouncement);
     void update(Anouncement anouncement);
