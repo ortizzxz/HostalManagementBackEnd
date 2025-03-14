@@ -20,7 +20,7 @@ public class Guest {
     private String phone;
     private LocalDateTime registerDate;
 
-    @OneToMany(mappedBy = "huesped")
+    @OneToMany(mappedBy = "guest")
     private Set<GuestReservation> reservations;
 
     public Guest() {

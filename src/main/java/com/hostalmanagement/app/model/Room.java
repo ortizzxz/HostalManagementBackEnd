@@ -25,7 +25,7 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private RoomState state;
 
-    @OneToMany(mappedBy = "habitacion")
+    @OneToMany(mappedBy = "room")
     private List<Reservation> reservations;
 
     public Room() {

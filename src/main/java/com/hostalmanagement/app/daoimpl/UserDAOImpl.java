@@ -27,27 +27,27 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public List<User> findAll(){
-        return entityManager.createQuery("FROM Usuario u", User.class)
+        return entityManager.createQuery("FROM User u", User.class)
                 .getResultList();
     }
 
     @Override
     public List<User> findByLastname(final String lastname) {
-        return entityManager.createQuery("FROM Usuario u WHERE u.apellido like :nombre", User.class)
+        return entityManager.createQuery("FROM User u WHERE u.apellido like :nombre", User.class)
                 .setParameter("apellido", lastname)
                 .getResultList();
     }
 
     @Override
     public User findByEmail(final String email) {
-        return entityManager.createQuery("FROM Usuario u where u.email like :email", User.class)
+        return entityManager.createQuery("FROM User u where u.email like :email", User.class)
                 .setParameter("email", email)
                 .getSingleResult();
     }
 
     @Override
     public List<User> findByRol(final String rol) {
-        return entityManager.createQuery("FROM Usuario u where u.rol like rol", User.class)
+        return entityManager.createQuery("FROM User u where u.rol like rol", User.class)
                 .setParameter("rol", rol)
                 .getResultList();
     }

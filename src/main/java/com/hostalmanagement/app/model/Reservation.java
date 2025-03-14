@@ -37,7 +37,7 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationState state; 
 
-    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<GuestReservation> guests;
 
     public enum ReservationState{
