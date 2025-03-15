@@ -25,7 +25,7 @@ public class User {
     @Email(message = "El email debe tener un formato válido")
     private String email;
 
-    @NotEmpty(message = "La contraseña no puede estar vacío")
+    @NotEmpty(message = "La contraseña no puede estar vacía")
     private String password;
 
     @Enumerated(EnumType.STRING)

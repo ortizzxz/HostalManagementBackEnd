@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hostalmanagement.app.DTO.UserDTO;
+import com.hostalmanagement.app.HostalManagementApplication;
+import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.dao.UserDAO;
 import com.hostalmanagement.app.model.User;
 import com.hostalmanagement.app.model.User.RolEnum;
@@ -14,12 +16,21 @@ import com.hostalmanagement.app.model.User.RolEnum;
 @Service
 public class UserService {
 
+    private final SecurityConfig securityConfig;
+
+    private final HostalManagementApplication hostalManagementApplication;
+
     @Autowired
     private UserDAO userDAO;
 
+    UserService(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
+        this.hostalManagementApplication = hostalManagementApplication;
+        this.securityConfig = securityConfig;
+    }
+
     public UserDTO findUserById(Long id) {
         User user = userDAO.findById(id);
-        return toDTO(user);
+        return (user != null) ? toDTO(user) : null;
     }
 
     public List<UserDTO> findAllUsers() {
@@ -29,7 +40,7 @@ public class UserService {
 
     private UserDTO toDTO(User user) {
         String rolName = user.getRol() != null ? user.getRol().name().toUpperCase() : "UNKNOWN";
-        return new UserDTO(user.getId(), user.getName(), user.getLastname(), user.getEmail(), rolName);
+        return new UserDTO(user.getId(), user.getName(), user.getLastname(), user.getEmail(), user.getPassword(), rolName);
     }
 
     private User toEntity(UserDTO userDTO) {
@@ -37,14 +48,18 @@ public class UserService {
                 userDTO.getName(),
                 userDTO.getLastname(),
                 userDTO.getEmail(),
-                null,
+                userDTO.getPassword(),
                 RolEnum.valueOf(userDTO.getRol()));
     }
 
     public UserDTO createUser(UserDTO userDTO) {
-        User user = toEntity(userDTO);
-        userDAO.save(user);
-        return toDTO(user);
+        try{
+            User user = toEntity(userDTO);
+            userDAO.save(user);
+            return toDTO(user);
+        } catch(IllegalArgumentException e){
+            throw new IllegalArgumentException("Error creando el usuario: " + e.getMessage()); // ENUM CONST error (Role)
+        }
     }
 
     public UserDTO updateUser(Long id, UserDTO userDTO) {

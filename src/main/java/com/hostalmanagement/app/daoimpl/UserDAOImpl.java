@@ -59,7 +59,7 @@ public class UserDAOImpl implements UserDAO{
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         // 
-        entityManager.persist(hashedPassword);
+        entityManager.persist(user);
     }
 
     @Override
