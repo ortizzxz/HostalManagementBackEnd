@@ -23,7 +23,7 @@ import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.service.UserService;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final SecurityConfig securityConfig;
@@ -72,11 +72,11 @@ public class UserController {
     // Eliminar un usuario
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long id) {
-        boolean eliminado = userService.deleteUser(id);
+        boolean deleted = userService.deleteUser(id);
         
         Map<String, String> response = new HashMap<>();
         
-        if (eliminado) {
+        if (deleted) {
             response.put("message", "Usuario eliminado con éxito");
             return ResponseEntity.ok(response);
         } else {

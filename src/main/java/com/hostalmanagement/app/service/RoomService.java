@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.RoomDTO;
@@ -14,6 +15,7 @@ import com.hostalmanagement.app.model.Room;
 import com.hostalmanagement.app.model.User;
 import com.hostalmanagement.app.model.User.RolEnum;
 
+@Service
 public class RoomService {
     private final SecurityConfig securityConfig;
 
@@ -50,26 +52,39 @@ public class RoomService {
                 roomDTO.getState());
     }
 
-    // public UserDTO updateUser(Long id, UserDTO userDTO) {
-    //     User existingUser = userDAO.findById(id);
-    //     if (existingUser != null) {
-    //         existingUser.setName(userDTO.getName());
-    //         existingUser.setLastname(userDTO.getLastname());
-    //         existingUser.setEmail(userDTO.getEmail());
-    //         existingUser.setRol(RolEnum.valueOf(userDTO.getRol())); 
-            
-    //         userDAO.update(existingUser);
-    //         return toDTO(existingUser);
-    //     }
-    //     return null;
-    // }
+    public RoomDTO createRoom(RoomDTO roomDTO) {
+        try{
+            Room room = toEntity(roomDTO);
+            roomDAO.save(room);
+            return toDTO(room);
+        } catch(IllegalArgumentException e){
+            throw new IllegalArgumentException("Error guardando la habitación: " + e.getMessage()); // ENUM CONST error (STATE)
+        }
+    }
 
-    // public boolean deleteUser(Long id) {
-    //     User existingUser = userDAO.findById(id);
-    //     if (existingUser != null) {
-    //         userDAO.remove(id);
-    //         return true;
-    //     }
-    //     return false;
-    // }
+
+    public RoomDTO updateRoom(Long id, RoomDTO roomDTO){
+        Room existingRoom = roomDAO.findById(id);
+        if(existingRoom != null){
+            existingRoom.setNumber(roomDTO.getNumber());
+            existingRoom.setBaseRate(roomDTO.getBaseRate());
+            existingRoom.setCapacity(roomDTO.getCapacity());
+            existingRoom.setType(roomDTO.getType());
+
+            roomDAO.update(existingRoom);
+            return toDTO(existingRoom);
+        }
+
+        return null;
+    }
+
+    public boolean deleteRoom(Long id){
+        Room existingRoom = roomDAO.findById(id);
+        if(existingRoom != null){
+            roomDAO.delete(id);
+            return true;
+        }
+        return false;
+    }
+
 }

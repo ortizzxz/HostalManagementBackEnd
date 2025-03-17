@@ -24,13 +24,13 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public Room findByRoomNumber(Long id) {
-        return entityManager.createQuery("from Habitacion h where h.numero = :id", Room.class)
+        return entityManager.createQuery("from Room h where h.numero = :id", Room.class)
                 .setParameter("id", id).getSingleResult();
     }
 
     @Override
     public List<Room> findAll() {
-        return entityManager.createQuery("from Habitacion", Room.class).getResultList(); 
+        return entityManager.createQuery("from Room", Room.class).getResultList(); 
     }
 
     @Override
@@ -57,14 +57,14 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public List<Room> findBetweenPrices(Double minPrice, Double maxPrice) {
         return entityManager
-                .createQuery("FROM Habitacion h WHERE h.tarifaBase BETWEEN :precioMin AND :precioMax", Room.class)
+                .createQuery("FROM Room h WHERE h.tarifaBase BETWEEN :precioMin AND :precioMax", Room.class)
                 .setParameter("precioMin", minPrice).setParameter("precioMax", maxPrice)
                 .getResultList();
     }
 
     @Override
     public List<Room> findAvailableRooms() {
-        return entityManager.createQuery("FROM Habitacion h WHERE h.estado = :estadoDisponible", Room.class)
+        return entityManager.createQuery("FROM Room h WHERE h.estado = :estadoDisponible", Room.class)
                 .setParameter("estadoDisponible", RoomState.DISPONIBLE)
                 .getResultList();
     }
