@@ -6,28 +6,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.RoomDTO;
-import com.hostalmanagement.app.DTO.UserDTO;
-import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.dao.RoomDAO;
 import com.hostalmanagement.app.model.Room;
-import com.hostalmanagement.app.model.User;
-import com.hostalmanagement.app.model.User.RolEnum;
 
 @Service
 public class RoomService {
-    private final SecurityConfig securityConfig;
-
-    private final HostalManagementApplication hostalManagementApplication;
 
     @Autowired
     private RoomDAO roomDAO;
 
-    RoomService(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
-        this.hostalManagementApplication = hostalManagementApplication;
-        this.securityConfig = securityConfig;
-    }
 
     public RoomDTO findRoomById(Long id){
         Room room = roomDAO.findById(id);

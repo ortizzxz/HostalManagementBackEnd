@@ -6,27 +6,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.AnouncementDTO;
-import com.hostalmanagement.app.DTO.RoomDTO;
-import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.dao.AnouncementDAO;
 import com.hostalmanagement.app.model.Anouncement;
-import com.hostalmanagement.app.model.Room;
 
 @Service
 public class AnouncementService {
-    private final SecurityConfig securityConfig;
-
-    private final HostalManagementApplication hostalManagementApplication;
-
     @Autowired
     private AnouncementDAO anouncementDAO;
-
-    AnouncementService(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
-        this.hostalManagementApplication = hostalManagementApplication;
-        this.securityConfig = securityConfig;
-    }
 
     public List<AnouncementDTO> findAllAnouncements(){
         List<Anouncement> anouncements = anouncementDAO.getAllAnouncements();

@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hostalmanagement.app.DTO.UserDTO;
-import com.hostalmanagement.app.HostalManagementApplication;
-import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.dao.UserDAO;
 import com.hostalmanagement.app.model.User;
 import com.hostalmanagement.app.model.User.RolEnum;
@@ -16,17 +14,8 @@ import com.hostalmanagement.app.model.User.RolEnum;
 @Service
 public class UserService {
 
-    private final SecurityConfig securityConfig;
-
-    private final HostalManagementApplication hostalManagementApplication;
-
     @Autowired
     private UserDAO userDAO;
-
-    UserService(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
-        this.hostalManagementApplication = hostalManagementApplication;
-        this.securityConfig = securityConfig;
-    }
 
     public UserDTO findUserById(Long id) {
         User user = userDAO.findById(id);

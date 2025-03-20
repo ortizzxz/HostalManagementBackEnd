@@ -2,9 +2,6 @@ package com.hostalmanagement.app.DTO;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-
 public class InventoryDTO {
     private Long id;
     private String item;
