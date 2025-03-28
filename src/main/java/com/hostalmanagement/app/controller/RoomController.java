@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.RoomDTO;
-import com.hostalmanagement.app.DTO.UserDTO;
 import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.service.RoomService;
 
