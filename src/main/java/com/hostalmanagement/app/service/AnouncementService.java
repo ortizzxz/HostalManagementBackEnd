@@ -35,6 +35,11 @@ public class AnouncementService {
         }
     }
     
+    public List<AnouncementDTO> findByIdGreaterThan(long id) {
+        List<Anouncement> anouncements = anouncementDAO.findByIdGreaterThan(id);
+        return anouncements.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
     public AnouncementDTO updateAnouncement(Long id, AnouncementDTO anouncementDTO){
         Anouncement existingAnouncement = anouncementDAO.findById(id);
         if(existingAnouncement != null){
@@ -73,3 +78,10 @@ public class AnouncementService {
 
 
 }
+
+
+    // // Devuelve todos los inventarios
+    // public List<InventoryDTO> findAllInventories() {
+    //     List<Inventory> inventories = inventoryDAO.findAll();
+    //     return inventories.stream().map(this::toDTO).collect(Collectors.toList());
+    // }

@@ -25,7 +25,14 @@ public class AnouncementDAOImpl implements AnouncementDAO {
 
     @Override
     public List<Anouncement> getAllAnouncements() {
-        return entityManager.createQuery("FROM Anuncio a", Anouncement.class).getResultList();
+        return entityManager.createQuery("FROM Anouncement a", Anouncement.class).getResultList();
+    }
+
+    @Override
+    public List<Anouncement> findByIdGreaterThan(long id) {
+        return entityManager.createQuery("FROM Anouncement a WHERE a.id > :id", Anouncement.class)
+                        .setParameter("id", id)
+                        .getResultList();
     }
 
     @Override
@@ -48,5 +55,5 @@ public class AnouncementDAOImpl implements AnouncementDAO {
             entityManager.remove(anouncement);
         }
     }
-    
+
 }
