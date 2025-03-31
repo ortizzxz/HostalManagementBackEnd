@@ -20,7 +20,7 @@ public class DatabaseUpdateService {
 
     private long lastProcessedId = 0; // Track the last processed record ID
 
-    @Scheduled(fixedRate = 5000) // Check every 5 seconds
+    @Scheduled(fixedRate = 60000) // Check every 60 seconds
     public void checkForUpdates() {
         // Fetch new entries from the database (e.g., entries with IDs greater than lastProcessedId)
         List<AnouncementDTO> newEntries = anouncementsService.findByIdGreaterThan(lastProcessedId);

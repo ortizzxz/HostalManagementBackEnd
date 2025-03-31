@@ -72,3 +72,13 @@ CREATE TABLE user (
     password VARCHAR(255) NOT NULL,
     rol ENUM('admin', 'recepcion', 'limpieza', 'mantenimiento', 'unknown') NOT NULL
 );
+
+CREATE TABLE notifications (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    table_name VARCHAR(255) NOT NULL, -- Name of the table where the change occurred
+    event_type ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL, -- Type of change
+    record_id BIGINT NOT NULL, -- ID of the record that was changed
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Timestamp of the event
+);
+
+-- Triggers For User

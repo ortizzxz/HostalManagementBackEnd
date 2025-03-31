@@ -7,9 +7,10 @@ INSERT INTO user (name, lastname, email, password, rol) VALUES
 
 INSERT INTO user (name, lastname, email, password, rol) VALUES
 ('Prueba', 'Usuario', 'prueba@usuario.com', 'password1213', 'limpieza');
-DELETE FROM user WHERE name LIKE '%Prueba%';
+
+DELETE FROM user ;
 
 INSERT INTO `anouncement` (`title`, `content`, `post_date`, `expiration_date`)
-VALUES ('Broadcast Funcionando', 'Contenido del anuncio de otro usuario en otra máquina.', '2025-03-29 19:30:00', '2025-04-29 10:00:00');
+VALUES ('Broadcast Funcionando De Nuevo', 'Contenido del anuncio de otro usuario en otra máquina.', '2025-03-29 19:30:00', '2025-04-29 10:00:00');
 
 DELETE FROM anouncement;
