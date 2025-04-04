@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/api/anouncement")
+@RequestMapping("/api/announcement")
 public class AnouncementController {
 
     private final SecurityFilterChain securityFilterChain;
