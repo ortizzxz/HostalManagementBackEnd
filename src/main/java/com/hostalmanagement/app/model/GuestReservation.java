@@ -14,7 +14,7 @@ public class GuestReservation {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "idReserva", referencedColumnName = "id")
+    @JoinColumn(name = "id_reserva", referencedColumnName = "id")
     private Reservation reservation; 
 
     public GuestReservation() { }

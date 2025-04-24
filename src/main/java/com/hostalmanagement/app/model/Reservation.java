@@ -27,7 +27,7 @@ public class Reservation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "idHabitacion", nullable = false)
+    @JoinColumn(name = "id_habitacion", nullable = false)
     private Room room;
 
     @Column(nullable = false)

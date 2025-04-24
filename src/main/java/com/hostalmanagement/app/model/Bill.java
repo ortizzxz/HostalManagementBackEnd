@@ -19,7 +19,7 @@ public class Bill {
     private BillState state;
     
     @OneToOne
-    @JoinColumn(name = "idReserva") 
+    @JoinColumn(name = "id_reserva") 
     private Reservation reservation;
 
     public Bill(){}

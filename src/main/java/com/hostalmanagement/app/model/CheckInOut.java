@@ -16,7 +16,7 @@ public class CheckInOut {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "idReserva") 
+    @JoinColumn(name = "id_reserva") 
     private Reservation reservation;
 
     private LocalDateTime inDate;
