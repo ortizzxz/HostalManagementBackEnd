@@ -1,7 +1,9 @@
 package com.hostalmanagement.app.model;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
+
+import com.hostalmanagement.app.DTO.GuestReservationDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -38,7 +40,7 @@ public class Reservation {
     private ReservationState state; 
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<GuestReservation> guests;
+    private List<GuestReservation> guests;
 
     public enum ReservationState{
         CONFIRMADA, CANCELADA, COMPLETADA
@@ -47,11 +49,12 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Room room, LocalDate inDate, LocalDate outDate, ReservationState state) {
+    public Reservation(Room room, LocalDate inDate, LocalDate outDate, ReservationState state, List<GuestReservation> guestReservations) {
         this.room = room;
         this.inDate = inDate;
         this.outDate = outDate;
         this.state = state;
+        this.guests = guestReservations;
     }
 
     public Long getId() {
@@ -86,11 +89,11 @@ public class Reservation {
         this.outDate = outDate;
     }
 
-    public Set<GuestReservation> getGuests() {
+    public List<GuestReservation> getGuests() {
         return guests;
     }
 
-    public void setGuests(Set<GuestReservation> guests) {
+    public void setGuests(List<GuestReservation> guests) {
         this.guests = guests;
     }
 

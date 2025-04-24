@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.hostalmanagement.app.DTO.GuestDTO;
 import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.model.Guest;
 
@@ -46,6 +47,19 @@ public class GuestDAOImpl implements GuestDAO{
         if(guest != null){
             entityManager.remove(guest);
         }
+    }
+
+    @Override
+    public GuestDTO toGuestDTO(Guest guest) {
+        GuestDTO guestDTO = new GuestDTO(
+            guest.getNIF(),
+            guest.getName(),
+            guest.getLastname(),
+            guest.getEmail(),
+            guest.getPhone()
+        );
+        
+        return guestDTO;
     }
     
 }

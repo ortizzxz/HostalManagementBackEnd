@@ -1,6 +1,8 @@
 package com.hostalmanagement.app.dao;
 
 import java.util.List;
+
+import com.hostalmanagement.app.DTO.ReservationDTO;
 import com.hostalmanagement.app.model.Reservation;
 
 public interface ReservationDAO {
@@ -13,6 +15,7 @@ public interface ReservationDAO {
 
     Reservation findByRoom(Long roomId);
 
+    ReservationDTO toReservationDTO(Reservation reservation);
     void save (Reservation reservation);
     void update (Reservation reservation);
     void delete (Long id);

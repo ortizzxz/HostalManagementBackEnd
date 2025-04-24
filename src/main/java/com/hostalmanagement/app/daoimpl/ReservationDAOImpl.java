@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.hostalmanagement.app.DTO.GuestDTO;
+import com.hostalmanagement.app.DTO.ReservationDTO;
 import com.hostalmanagement.app.dao.ReservationDAO;
+import com.hostalmanagement.app.model.Guest;
 import com.hostalmanagement.app.model.Reservation;
 
 import jakarta.persistence.EntityManager;
@@ -58,22 +61,46 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     @Transactional
     public void save(Reservation reservation) {
-        entityManager.persist(reservation);        
+        entityManager.persist(reservation);
     }
 
     @Override
     @Transactional
     public void update(Reservation reservation) {
-        entityManager.merge(reservation);        
+        entityManager.merge(reservation);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
         Reservation reservation = findById(id);
-        if(reservation != null){
+        if (reservation != null) {
             entityManager.remove(reservation);
         }
+    }
+
+    @Override
+    public ReservationDTO toReservationDTO(Reservation reservation) {
+        List<GuestDTO> guestDTOs = reservation.getGuests()
+                .stream()
+                .map(gr -> {
+                    Guest g = gr.getGuest();
+                    return new GuestDTO(
+                            g.getNIF(),
+                            g.getName(),
+                            g.getLastname(),
+                            g.getEmail(),
+                            g.getPhone());
+                })
+                .toList();
+
+        ReservationDTO reservationDTO = new ReservationDTO(
+                reservation.getRoom().getId(),
+                reservation.getInDate(),
+                reservation.getOutDate(),
+                reservation.getState().toString(),
+                guestDTOs);
+        return reservationDTO;
     }
 
 }
