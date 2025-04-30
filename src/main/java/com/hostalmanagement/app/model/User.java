@@ -6,6 +6,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -31,6 +33,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RolEnum rol;
 
+    @ManyToOne(optional = false) // each user must belong to a tenant
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant;
+
     public enum RolEnum {
         admin, recepcion, limpieza, mantenimiento, unknown
     }
@@ -38,12 +44,13 @@ public class User {
     public User() {
     }
 
-    public User(String name, String lastname, String email, String password, RolEnum rol) {
+    public User(String name, String lastname, String email, String password, RolEnum rol, Tenant tenant) {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.rol = rol;
+        this.tenant = tenant;
     }
 
     public Long getId() {
@@ -94,13 +101,22 @@ public class User {
         this.rol = rol;
     }
 
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "name='" + getName() + '\'' +
                 ", lastname='" + getLastname() + '\'' +
                 ", email='" + getEmail() + '\'' +
-                ", rol=" + getRol() +
+                ", rol=" + getRol() + '\'' +
+                ", tenant_id=" + getTenant() + '\'' +
                 '}';
     }
 }

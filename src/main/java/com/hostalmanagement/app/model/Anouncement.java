@@ -2,10 +2,7 @@ package com.hostalmanagement.app.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Anouncement {
@@ -18,17 +15,21 @@ public class Anouncement {
     private LocalDateTime postDate;
     private LocalDateTime expirationDate;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant;
+
     public Anouncement() {
     }
 
-    public Anouncement(String title, String content, LocalDateTime postDate, LocalDateTime expirationDate) {
+    public Anouncement(String title, String content, LocalDateTime postDate, LocalDateTime expirationDate, Tenant tenant) {
         this.title = title;
         this.content = content;
         this.postDate = postDate;
         this.expirationDate = expirationDate;
+        this.tenant = tenant;
     }
 
-    
     public Long getId() {
         return id;
     }
@@ -69,12 +70,23 @@ public class Anouncement {
         this.expirationDate = expirationDate;
     }
 
-    @Override
-    public String toString() {
-        return "Anouncement{Id=" + getId() + ", Title=" + getTitle() + ", Content=" + getContent()
-                + ", Post Date=" + getPostDate() + ", Expiration Date=" + getExpirationDate()
-                + "}";
+    public Tenant getTenant() {
+        return tenant;
     }
 
-    
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+
+    @Override
+    public String toString() {
+        return "Anouncement{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", postDate=" + postDate +
+                ", expirationDate=" + expirationDate +
+                ", tenant=" + (tenant != null ? tenant.getId() : null) +
+                '}';
+    }
 }

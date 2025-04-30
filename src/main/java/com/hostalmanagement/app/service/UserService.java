@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hostalmanagement.app.DTO.UserDTO;
+import com.hostalmanagement.app.dao.TenantDAO;
 import com.hostalmanagement.app.dao.UserDAO;
+import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.model.User;
 import com.hostalmanagement.app.model.User.RolEnum;
 
@@ -16,6 +19,15 @@ public class UserService {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private TenantDAO tenantDAO;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public UserDTO findUserById(Long id) {
         User user = userDAO.findById(id);
@@ -29,36 +41,55 @@ public class UserService {
 
     private UserDTO toDTO(User user) {
         String rolName = user.getRol() != null ? user.getRol().name().toUpperCase() : "UNKNOWN";
-        return new UserDTO(user.getId(), user.getName(), user.getLastname(), user.getEmail(), user.getPassword(), rolName);
+        Long tenantId = user.getTenant() != null ? user.getTenant().getId() : null;
+        return new UserDTO(
+                user.getId(),
+                user.getName(),
+                user.getLastname(),
+                user.getEmail(),
+                user.getPassword(),
+                rolName,
+                tenantId);
     }
 
     private User toEntity(UserDTO userDTO) {
+        Tenant tenant = tenantDAO.findById(userDTO.getTenant());
+        if (tenant == null) {
+            throw new IllegalArgumentException("Tenant ID not found: " + userDTO.getTenant());
+        }
         return new User(
                 userDTO.getName(),
                 userDTO.getLastname(),
                 userDTO.getEmail(),
                 userDTO.getPassword(),
-                RolEnum.valueOf(userDTO.getRol()));
+                RolEnum.valueOf(userDTO.getRol()),
+                tenant);
     }
 
     public UserDTO createUser(UserDTO userDTO) {
-        try{
+        try {
             User user = toEntity(userDTO);
             userDAO.save(user);
             return toDTO(user);
-        } catch(IllegalArgumentException e){
-            throw new IllegalArgumentException("Error creando el usuario: " + e.getMessage()); // ENUM CONST error (Role)
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Error creando el usuario: " + e.getMessage());
         }
     }
 
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User existingUser = userDAO.findById(id);
         if (existingUser != null) {
+            Tenant tenant = tenantDAO.findById(userDTO.getTenant());
+            if (tenant == null) {
+                throw new IllegalArgumentException("Tenant ID not found: " + userDTO.getTenant());
+            }
+
             existingUser.setName(userDTO.getName());
             existingUser.setLastname(userDTO.getLastname());
             existingUser.setEmail(userDTO.getEmail());
-            existingUser.setRol(RolEnum.valueOf(userDTO.getRol())); 
-            
+            existingUser.setRol(RolEnum.valueOf(userDTO.getRol()));
+            existingUser.setTenant(tenant);
+
             userDAO.update(existingUser);
             return toDTO(existingUser);
         }
@@ -72,6 +103,18 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    // Authenticate the user by email and password
+    public User authenticateUser(UserDTO userDTO) {
+        // Find the user by email
+        User user = userDAO.findByEmail(userDTO.getEmail());
+        if (user != null && passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) {
+            // If the user is found and password matches, return the user
+            return user;
+        }
+        // If the user is not found or password doesn't match, return null
+        return null;
     }
 
 }

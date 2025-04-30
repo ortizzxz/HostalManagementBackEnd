@@ -7,16 +7,18 @@ public class UserDTO {
     private String email;
     private String password;
     private String rol;
+    private Long tenant;
 
     public UserDTO(){}
 
-    public UserDTO(Long id, String name, String lastname, String email, String password, String rol) {
+    public UserDTO(Long id, String name, String lastname, String email, String password, String rol, Long tenant) {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.rol = rol;
+        this.tenant = tenant;
     }
 
     public Long getId() {
@@ -67,5 +69,11 @@ public class UserDTO {
         this.rol = rol;
     }
 
-    
+    public Long getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Long tenant) {
+        this.tenant = tenant;
+    }
 }

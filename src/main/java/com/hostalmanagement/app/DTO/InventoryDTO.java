@@ -8,15 +8,17 @@ public class InventoryDTO {
     private int amount;
     private int warningLevel;
     private LocalDateTime lastUpdate;
+    private Long tenant;
 
     public InventoryDTO(){}
 
-    public InventoryDTO(Long id, String item, int amount, int warningLevel, LocalDateTime lastUpdate) {
+    public InventoryDTO(Long id, String item, int amount, int warningLevel, LocalDateTime lastUpdate, Long tenant) {
         this.id = id;
         this.item = item;
         this.amount = amount;
         this.warningLevel = warningLevel;
         this.lastUpdate = lastUpdate;
+        this.tenant = tenant;
     }
 
     public Long getId() {
@@ -59,5 +61,11 @@ public class InventoryDTO {
         this.lastUpdate = lastUpdate;
     }
 
-    
+    public Long getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Long tenant) {
+        this.tenant = tenant;
+    }
 }

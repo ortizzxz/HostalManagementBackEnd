@@ -22,6 +22,8 @@ import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -69,13 +71,27 @@ public class UserController {
         }
     }
 
+    // Log in 
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO userDTO, HttpServletResponse response) {
+        try {
+            // Assuming your service has the login method which validates email/password and
+            // generates a JWT token
+            String token = userService.loginUser(userDTO);
+            response.setHeader("Authorization", "Bearer " + token);
+            return ResponseEntity.ok(userDTO); // Respond with the user details
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(null); // Unauthorized
+        }
+    }
+
     // Eliminar un usuario
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long id) {
         boolean deleted = userService.deleteUser(id);
-        
+
         Map<String, String> response = new HashMap<>();
-        
+
         if (deleted) {
             response.put("message", "Usuario eliminado con éxito");
             return ResponseEntity.ok(response);
