@@ -13,6 +13,7 @@ import com.hostalmanagement.app.DTO.ReservationDTO;
 import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.dao.GuestReservationDAO;
 import com.hostalmanagement.app.dao.ReservationDAO;
+import com.hostalmanagement.app.dao.ReservationJpaDAO;
 import com.hostalmanagement.app.dao.RoomDAO;
 import com.hostalmanagement.app.model.Guest;
 import com.hostalmanagement.app.model.GuestReservation;
@@ -37,50 +38,48 @@ public class GuestReservationService {
     @Autowired
     private RoomDAO roomDAO;
 
+    @Autowired
+    private ReservationJpaDAO reservationJpaDAO;
+
+    private Reservation createReservationEntity(GuestReservationDTO dto) {
+        ReservationDTO reservationDTO = dto.getReservationDTO();
+        Room room = roomDAO.findById(reservationDTO.getRoomId());
+
+        return new Reservation(
+                room,
+                reservationDTO.getInDate(),
+                reservationDTO.getOutDate(),
+                ReservationState.valueOf(reservationDTO.getState().toUpperCase()),
+                new ArrayList<>());
+    }
+
+    private Guest getOrCreateGuest(GuestDTO guestDTO) {
+        Guest guest = guestDAO.findByNIF(guestDTO.getNif());
+        if (guest == null) {
+            guest = new Guest(
+                    guestDTO.getEmail(),
+                    guestDTO.getLastname(),
+                    guestDTO.getName(),
+                    guestDTO.getNif(),
+                    guestDTO.getPhone());
+            guestDAO.save(guest);
+        }
+        return guest;
+    }
+
     @Transactional
-    public Reservation createGuestReservation(GuestReservationDTO guestReservationDTO) {
-        // Default value for ReservationState
-        ReservationState reservationState;
-        // Convert from String to ENUM
-        try {
-            reservationState = ReservationState
-                    .valueOf(guestReservationDTO.getReservationDTO().getState().toUpperCase());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new IllegalArgumentException(
-                    "Invalid reservation state: " + guestReservationDTO.getReservationDTO().getState());
-        }
+    public Reservation createGuestReservation(GuestReservationDTO dto) {
+        Reservation reservation = createReservationEntity(dto);
+        reservation = reservationJpaDAO.saveAndFlush(reservation); // reassignment
 
-        // Find the Room (assuming the Room object is already created)
-        Room room = roomDAO.findById(guestReservationDTO.getReservationDTO().getRoomId());
+        final Reservation savedReservation = reservation; // now effectively final
 
-        // Create a list of GuestReservations based on guests in the GuestReservationDTO
-        List<GuestReservation> guestReservations = new ArrayList<>();
-        for (GuestDTO guestDTO : guestReservationDTO.getReservationDTO().getGuests()) {
-            // Ensure the guest exists or create a new one if necessary
-            Guest guest = guestDAO.findByNIF(guestDTO.getNif());
-            if (guest == null) {
-                guest = new Guest(guestDTO.getEmail(), guestDTO.getLastname(), guestDTO.getName(), guestDTO.getNif(),
-                        guestDTO.getPhone());
-                guestDAO.save(guest);
-            }
+        dto.getReservationDTO().getGuests().forEach(guestDTO -> {
+            Guest guest = getOrCreateGuest(guestDTO);
+            guestReservationDAO.save(new GuestReservation(guest, savedReservation));
+        });
 
-            // Create GuestReservation for each guest
-            GuestReservation guestReservation = new GuestReservation(guest, null); // Reservation is set later
-            guestReservations.add(guestReservation);
-        }
-
-        // Create the Reservation object
-        Reservation reservation = new Reservation(room, guestReservationDTO.getReservationDTO().getInDate(),
-                guestReservationDTO.getReservationDTO().getOutDate(), reservationState, guestReservations);
-        reservationDAO.save(reservation);
-
-        // Set the reservation for each GuestReservation and save them
-        for (GuestReservation guestReservation : guestReservations) {
-            guestReservation.setReservation(reservation); // Set the reservation after creation
-            guestReservationDAO.save(guestReservation);
-        }
-
-        return reservation; // Return the saved reservation
+        return savedReservation;
     }
 
     public GuestReservationDTO findGuestReservaitonByReservationId(Long Id) {
@@ -116,29 +115,31 @@ public class GuestReservationService {
     }
 
     private GuestReservation toEntity(GuestReservationDTO guestReservationDTO) {
-        // Assuming guestDTO is a list of GuestDTOs, we'll retrieve the first guest from the list
+        // Assuming guestDTO is a list of GuestDTOs, we'll retrieve the first guest from
+        // the list
         GuestDTO guestDTO = guestReservationDTO.getGuestDTO().get(0); // Assuming there's always at least one guest
-        
+
         // Find the Guest entity by NIF
         Guest guest = guestDAO.findByNIF(guestDTO.getNif());
         if (guest == null) {
             guest = new Guest(guestDTO.getEmail(), guestDTO.getLastname(), guestDTO.getName(), guestDTO.getNif(),
-                        guestDTO.getPhone());
+                    guestDTO.getPhone());
             throw new IllegalArgumentException("Guest not found with NIF: " + guestDTO.getNif());
         }
-        
+
         // Find the Reservation entity by the ID
         ReservationDTO reservationDTO = guestReservationDTO.getReservationDTO();
         Reservation reservation = reservationDAO.findById(reservationDTO.getRoomId());
         if (reservation == null) {
-            // Handle the case where the reservation does not exist, e.g., throw an exception
+            // Handle the case where the reservation does not exist, e.g., throw an
+            // exception
             throw new IllegalArgumentException("Reservation not found with ID: " + reservationDTO.getRoomId());
         }
-        
+
         // Now create and return the GuestReservation entity
         return new GuestReservation(guest, reservation);
     }
-    
+
     // public GuestReservationDTO updateGuestReservation(String NIF, GuestDTO
     // guestDTO, ReservationDTO reservationDTO) {
     // GuestReservation existingGuestReservation =

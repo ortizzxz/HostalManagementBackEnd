@@ -20,7 +20,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "reserva")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

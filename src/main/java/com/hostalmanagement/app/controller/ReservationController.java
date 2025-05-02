@@ -1,7 +1,10 @@
 package com.hostalmanagement.app.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +14,7 @@ import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.GuestDTO;
 import com.hostalmanagement.app.DTO.GuestReservationDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
+import com.hostalmanagement.app.DTO.RoomDTO;
 import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.service.GuestReservationService;
 import com.hostalmanagement.app.service.GuestService;
@@ -38,6 +42,12 @@ public class ReservationController {
     ReservationController(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
         this.hostalManagementApplication = hostalManagementApplication;
         this.securityConfig = securityConfig;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ReservationDTO>> findAllReservations(){
+        List<ReservationDTO> reservations = reservationService.findAllReservations();
+        return ResponseEntity.ok(reservations);
     }
 
     @PostMapping

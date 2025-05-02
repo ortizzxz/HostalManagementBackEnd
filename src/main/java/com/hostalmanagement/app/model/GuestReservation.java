@@ -2,26 +2,30 @@ package com.hostalmanagement.app.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "guest_reservation")
+@IdClass(GuestReservationId.class) // Composite key class
 public class GuestReservation {
     @Id
     @ManyToOne
-    @JoinColumn(name  = "NIFHuesped", referencedColumnName = "NIF")
-    private Guest guest;
+    @JoinColumn(name = "id_reserva", referencedColumnName = "id")
+    private Reservation reservation;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "id_reserva", referencedColumnName = "id")
-    private Reservation reservation; 
+    @JoinColumn(name = "nifhuesped", referencedColumnName = "nif")
+    private Guest guest;
 
-    public GuestReservation() { }
+    public GuestReservation() {}
 
     public GuestReservation(Guest guest, Reservation reservation) {
-        this.guest = guest;
         this.reservation = reservation;
+        this.guest = guest;
     }
 
     public Guest getGuest() {
@@ -39,6 +43,4 @@ public class GuestReservation {
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
     }
-
-
-}   
+}
