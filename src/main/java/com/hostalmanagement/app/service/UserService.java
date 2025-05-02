@@ -117,4 +117,15 @@ public class UserService {
         return null;
     }
 
+    // Inside UserService.java
+    public String loginUser(UserDTO userDTO) throws Exception {
+        User user = authenticateUser(userDTO);
+        if (user == null) {
+            throw new Exception("Invalid credentials");
+        }
+
+        // Assuming your User entity has a getTenantId() method
+        return jwtService.generateToken(user.getEmail(), user.getTenant().getId());
+    }
+
 }
