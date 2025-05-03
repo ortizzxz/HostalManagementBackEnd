@@ -1,8 +1,8 @@
-# Etapa 1: construir el proyecto con Maven
+# Etapa 1: construir el proyecto con Maven Wrapper
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 # Etapa 2: imagen final con solo el JAR
 FROM eclipse-temurin:17-jdk-alpine
