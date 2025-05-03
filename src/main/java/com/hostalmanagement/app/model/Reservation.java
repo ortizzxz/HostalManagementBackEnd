@@ -1,6 +1,7 @@
 package com.hostalmanagement.app.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.hostalmanagement.app.DTO.GuestReservationDTO;
@@ -30,10 +31,10 @@ public class Reservation {
     private Room room;
 
     @Column(nullable = false)
-    private LocalDate inDate;
+    private LocalDateTime inDate;
 
     @Column(nullable = false)
-    private LocalDate outDate;
+    private LocalDateTime outDate;
 
     @Enumerated(EnumType.STRING)
     private ReservationState state; 
@@ -48,7 +49,7 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Room room, LocalDate inDate, LocalDate outDate, ReservationState state, List<GuestReservation> guestReservations) {
+    public Reservation(Room room, LocalDateTime inDate, LocalDateTime outDate, ReservationState state, List<GuestReservation> guestReservations) {
         this.room = room;
         this.inDate = inDate;
         this.outDate = outDate;
@@ -72,19 +73,19 @@ public class Reservation {
         this.room = room;
     }
 
-    public LocalDate getInDate() {
+    public LocalDateTime getInDate() {
         return inDate;
     }
 
-    public void setInDate(LocalDate inDate) {
+    public void setInDate(LocalDateTime inDate) {
         this.inDate = inDate;
     }
 
-    public LocalDate getOutDate() {
+    public LocalDateTime getOutDate() {
         return outDate;
     }
 
-    public void setOutDate(LocalDate outDate) {
+    public void setOutDate(LocalDateTime outDate) {
         this.outDate = outDate;
     }
 

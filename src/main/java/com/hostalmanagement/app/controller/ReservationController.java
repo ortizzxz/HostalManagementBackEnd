@@ -54,7 +54,7 @@ public class ReservationController {
     @Transactional
     public ResponseEntity<?> createReservation(@RequestBody ReservationDTO request) {
         // Create the reservation and save it
-        ReservationDTO reservationDTO = new ReservationDTO(request.getRoomId(), request.getInDate(), request.getOutDate(), request.getState(), request.getGuests());
+        ReservationDTO reservationDTO = new ReservationDTO(null, request.getRoomId(), request.getInDate(), request.getOutDate(), request.getState(), request.getGuests());
         
         // Call the service method to create the reservation and guest reservations
         guestReservationService.createGuestReservation(new GuestReservationDTO(request.getGuests(), reservationDTO));

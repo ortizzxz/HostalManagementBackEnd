@@ -1,19 +1,23 @@
 package com.hostalmanagement.app.DTO;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ReservationDTO {
+    private Long id;
     private Long roomId;
-    private LocalDate inDate;
-    private LocalDate outDate;
+    private LocalDateTime inDate;
+    private LocalDateTime outDate;
     private String state;
     private List<GuestDTO> guests;
 
     public ReservationDTO() {
     }
 
-    public ReservationDTO(Long roomId, LocalDate inDate, LocalDate outDate, String state, List<GuestDTO> guests) {
+    public ReservationDTO(Long id, Long roomId, LocalDateTime inDate, LocalDateTime outDate, String state,
+            List<GuestDTO> guests) {
+        this.id = id;
         this.roomId = roomId;
         this.inDate = inDate;
         this.outDate = outDate;
@@ -29,19 +33,19 @@ public class ReservationDTO {
         this.roomId = roomId;
     }
 
-    public LocalDate getInDate() {
+    public LocalDateTime getInDate() {
         return inDate;
     }
 
-    public void setInDate(LocalDate inDate) {
+    public void setInDate(LocalDateTime inDate) {
         this.inDate = inDate;
     }
 
-    public LocalDate getOutDate() {
+    public LocalDateTime getOutDate() {
         return outDate;
     }
 
-    public void setOutDate(LocalDate outDate) {
+    public void setOutDate(LocalDateTime outDate) {
         this.outDate = outDate;
     }
 
@@ -59,6 +63,14 @@ public class ReservationDTO {
 
     public void setGuests(List<GuestDTO> guests) {
         this.guests = guests;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

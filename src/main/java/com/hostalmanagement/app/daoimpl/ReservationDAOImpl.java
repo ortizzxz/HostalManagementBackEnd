@@ -27,33 +27,33 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @Override
     public List<Reservation> findAll() {
-        return entityManager.createQuery("from Reserva", Reservation.class).getResultList();
+        return entityManager.createQuery("from Reservation", Reservation.class).getResultList();
     }
 
     @Override
     public List<Reservation> findByConfirmed() {
-        return entityManager.createQuery("from Reserva r where r.estado like :estado", Reservation.class)
+        return entityManager.createQuery("from Reservation r where r.estado like :estado", Reservation.class)
                 .setParameter("estado", Reservation.ReservationState.CONFIRMADA)
                 .getResultList();
     }
 
     @Override
     public List<Reservation> findByCanceled() {
-        return entityManager.createQuery("FROM Reserva r where r.estado like :estado", Reservation.class)
+        return entityManager.createQuery("FROM Reservation r where r.estado like :estado", Reservation.class)
                 .setParameter("estado", Reservation.ReservationState.CANCELADA)
                 .getResultList();
     }
 
     @Override
     public List<Reservation> findByCompleted() {
-        return entityManager.createQuery("FROM Reserva r where r.estado like :estado", Reservation.class)
+        return entityManager.createQuery("FROM Reservation r where r.estado like :estado", Reservation.class)
                 .setParameter("estado", Reservation.ReservationState.COMPLETADA)
                 .getResultList();
     }
 
     @Override
     public Reservation findByRoom(Long roomId) {
-        return entityManager.createQuery("FROM Reserva R WHERE idHabitacion like :idHabitacion", Reservation.class)
+        return entityManager.createQuery("FROM Reservation R WHERE idHabitacion like :idHabitacion", Reservation.class)
                 .setParameter("idHabitacion", roomId)
                 .getSingleResult();
     }
@@ -95,6 +95,7 @@ public class ReservationDAOImpl implements ReservationDAO {
                 .toList();
 
         ReservationDTO reservationDTO = new ReservationDTO(
+                reservation.getId(),
                 reservation.getRoom().getId(),
                 reservation.getInDate(),
                 reservation.getOutDate(),

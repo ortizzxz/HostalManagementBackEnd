@@ -88,6 +88,7 @@ public class ReservationService {
                 .toList();
 
         return new ReservationDTO(
+                reservation.getId(),
                 reservation.getRoom().getId(),
                 reservation.getInDate(),
                 reservation.getOutDate(),
