@@ -1,14 +1,12 @@
-# Imagen base con JDK 17 
-FROM eclipse-temurin:17-jdk-alpine
-
-# Directorio de trabajo dentro del contenedor
+# Etapa 1: construir el proyecto con Maven
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
 
-# Copiar el archivo JAR al contenedor
-COPY target/*.jar app.jar
-
-# Exponer el puerto que usa Spring Boot
+# Etapa 2: imagen final con solo el JAR
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
