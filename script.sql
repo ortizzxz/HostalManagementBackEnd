@@ -82,3 +82,8 @@ CREATE TABLE notifications (
 );
 
 -- Triggers For User
+
+
+ALTER TABLE reservation
+MODIFY COLUMN in_date TIMESTAMP NOT NULL,
+MODIFY COLUMN out_date TIMESTAMP NOT NULL;
