@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hostalmanagement.app.HostalManagementApplication;
-import com.hostalmanagement.app.DTO.GuestDTO;
+import com.hostalmanagement.app.DTO.CheckInOutDTO;
 import com.hostalmanagement.app.DTO.GuestReservationDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
-import com.hostalmanagement.app.DTO.RoomDTO;
 import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.model.Tenant;
+import com.hostalmanagement.app.service.CheckInOutService;
 import com.hostalmanagement.app.service.GuestReservationService;
-import com.hostalmanagement.app.service.GuestService;
 import com.hostalmanagement.app.service.ReservationService;
 import com.hostalmanagement.app.service.TenantService;
 
 import jakarta.transaction.Transactional;
+
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -36,13 +36,13 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @Autowired
-    private GuestService guestService;
-    
-    @Autowired
     private GuestReservationService guestReservationService;
 
     @Autowired
     private TenantService tenantService;
+
+    @Autowired
+    private CheckInOutService checkInOutService;
 
     ReservationController(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
         this.hostalManagementApplication = hostalManagementApplication;
@@ -55,6 +55,14 @@ public class ReservationController {
         List<ReservationDTO> reservations = reservationService.findAllReservations(tenant);
         return ResponseEntity.ok(reservations);
     }
+
+    @GetMapping("/checkins")
+    public ResponseEntity<List<CheckInOutDTO>> getAllCheckIns(Long tenantId) {
+        List<CheckInOutDTO> checkins = checkInOutService.findAllCheckInOuts(); 
+
+        return ResponseEntity.ok(checkins);
+    }
+    
 
     @PostMapping
     @Transactional

@@ -25,26 +25,26 @@ public class CheckInOutDAOImpl implements CheckInOutDAO {
     
     @Override
     public List<CheckInOut> findAll() {
-        return entityManager.createQuery("FROM checkInOut c", CheckInOut.class).getResultList();
+        return entityManager.createQuery("FROM CheckInOut c", CheckInOut.class).getResultList();
     }
 
     @Override
     public CheckInOut findByReservation(final Long reservationId) {
-        return entityManager.createQuery("FROM checkInOut c WHERE c.idReserva LIKE :idReserva", CheckInOut.class)
+        return entityManager.createQuery("FROM CheckInOut c WHERE c.idReserva LIKE :idReserva", CheckInOut.class)
                 .setParameter("idReserva", reservationId)
                 .getSingleResult();
     }
 
     @Override
     public List<CheckInOut> getByDateIn(LocalDateTime fechaIn) {
-        return entityManager.createQuery("FROM checkInOut c WHERE c.fechaIn LIKE :fechaIn", CheckInOut.class)
+        return entityManager.createQuery("FROM CheckInOut c WHERE c.fechaIn LIKE :fechaIn", CheckInOut.class)
                 .setParameter("fechaIn", fechaIn)
                 .getResultList();
     }
 
     @Override
     public List<CheckInOut> getByDateOut(LocalDateTime fechaOut) {
-        return entityManager.createQuery("FROM checkInOut c WHERE c.fechaOut LIKE :fechaOut", CheckInOut.class)
+        return entityManager.createQuery("FROM CheckInOut c WHERE c.fechaOut LIKE :fechaOut", CheckInOut.class)
                 .setParameter("fechaOut", fechaOut)
                 .getResultList();
     }

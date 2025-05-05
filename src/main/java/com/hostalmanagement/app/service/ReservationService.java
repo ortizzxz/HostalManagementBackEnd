@@ -94,7 +94,7 @@ public class ReservationService {
 
     }
 
-    private ReservationDTO toDTO(Reservation reservation) {
+    public ReservationDTO toDTO(Reservation reservation) {
         List<GuestDTO> guestDTOs = reservation.getGuests()
                 .stream()
                 .map(gr -> {
