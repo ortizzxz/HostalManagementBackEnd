@@ -2,13 +2,17 @@ package com.hostalmanagement.app.daoimpl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
+import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.ReservationDAO;
 import com.hostalmanagement.app.model.Guest;
 import com.hostalmanagement.app.model.Reservation;
+import com.hostalmanagement.app.model.Tenant;
+import com.hostalmanagement.app.service.TenantService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -20,16 +24,22 @@ public class ReservationDAOImpl implements ReservationDAO {
     @PersistenceContext
     EntityManager entityManager;
 
+    @Autowired
+    private TenantService tenantService;
+
     @Override
     public Reservation findById(Long id) {
         return entityManager.find(Reservation.class, id);
     }
 
     @Override
-    public List<Reservation> findAll() {
-        return entityManager.createQuery("from Reservation", Reservation.class).getResultList();
+    public List<Reservation> findAll(Tenant tenant) {
+        return entityManager.createQuery(
+            "SELECT r FROM Reservation r WHERE r.room.tenant = :tenant", Reservation.class)
+            .setParameter("tenant", tenant)
+            .getResultList();
     }
-
+    
     @Override
     public List<Reservation> findByConfirmed() {
         return entityManager.createQuery("from Reservation r where r.estado like :estado", Reservation.class)
@@ -90,7 +100,7 @@ public class ReservationDAOImpl implements ReservationDAO {
                             g.getName(),
                             g.getLastname(),
                             g.getEmail(),
-                            g.getPhone());
+                            g.getPhone(),g.getTenant().getId());
                 })
                 .toList();
 
@@ -100,7 +110,8 @@ public class ReservationDAOImpl implements ReservationDAO {
                 reservation.getInDate(),
                 reservation.getOutDate(),
                 reservation.getState().toString(),
-                guestDTOs);
+                guestDTOs,
+                reservation.getRoom().getTenant().getId());
         return reservationDTO;
     }
 

@@ -34,8 +34,8 @@ public class UserService {
         return (user != null) ? toDTO(user) : null;
     }
 
-    public List<UserDTO> findAllUsers() {
-        List<User> users = userDAO.findAll();
+    public List<UserDTO> findAllUsers(Tenant tenant) {
+        List<User> users = userDAO.findAll(tenant);
         return users.stream().map(this::toDTO).collect(Collectors.toList());
     }
 

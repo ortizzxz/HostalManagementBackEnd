@@ -6,16 +6,27 @@ public class GuestDTO {
     private String lastname;
     private String email;
     private String phone;
+    private Long tenantId;
 
     public GuestDTO() {
     }
 
-    public GuestDTO(String nif, String name, String lastname, String email, String phone) {
+    public GuestDTO(String nif, String name, String lastname, String email, String phone, Long tenantId) {
         this.nif = nif;
         this.name = name;
         this.lastname = lastname;
         this.email = email;
         this.phone = phone;
+        this.tenantId = tenantId;
+    }
+
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getNif() {

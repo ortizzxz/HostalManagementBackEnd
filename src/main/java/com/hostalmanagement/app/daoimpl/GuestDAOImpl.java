@@ -2,11 +2,14 @@ package com.hostalmanagement.app.daoimpl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
+import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.model.Guest;
+import com.hostalmanagement.app.service.TenantService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,6 +20,8 @@ public class GuestDAOImpl implements GuestDAO{
     @PersistenceContext
     EntityManager entityManager;
 
+    @Autowired
+    private TenantService tenantService;
 
     @Override
     public Guest findByNIF(String NIF) {
@@ -56,7 +61,8 @@ public class GuestDAOImpl implements GuestDAO{
             guest.getName(),
             guest.getLastname(),
             guest.getEmail(),
-            guest.getPhone()
+            guest.getPhone(),
+            guest.getTenant().getId()
         );
         
         return guestDTO;

@@ -22,8 +22,8 @@ public class AnouncementService {
     private TenantDAO tenantDAO; // Inject TenantDAO to get Tenant by ID
 
     // Devuelve todos los anuncios
-    public List<AnouncementDTO> findAllAnouncements(){
-        List<Anouncement> anouncements = anouncementDAO.getAllAnouncements();
+    public List<AnouncementDTO> findAllAnouncements(Tenant tenant){
+        List<Anouncement> anouncements = anouncementDAO.getAllAnouncements(tenant);
         return anouncements.stream().map(this::toDTO).collect(Collectors.toList());
     }
 

@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -28,15 +30,20 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Reservation> reservations;
 
+    @ManyToOne(optional = false) // each room must belong to a tenant
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant;
+
     public Room() {
     }
 
-    public Room(int number, String type, int capacity, double baseRate, RoomState state) {
+    public Room(int number, String type, int capacity, double baseRate, RoomState state, Tenant tenant) {
         this.number = number;
         this.type = type;
         this.capacity = capacity;
         this.baseRate = baseRate;
         this.state = state;
+        this.tenant = tenant;
     }
 
     public enum RoomState {
@@ -102,12 +109,18 @@ public class Room {
         this.reservations = reservations;
     }
 
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
 
     @Override
     public String toString() {
         return "Room{Id=" + getId() + ", Number=" + getNumber() + ", Type=" + getType()
                 + ", Capacity=" + getCapacity() + ", baseRate=" + getBaseRate() + ", State="
-                + getState() + "}";
+                + getState() + ", Tenant=" + getTenant() + "}";
     }
-
 }

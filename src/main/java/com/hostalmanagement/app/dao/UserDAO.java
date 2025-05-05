@@ -4,12 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.model.User;
 
 @Repository
 public interface UserDAO {
     User findById(Long id);
-    List<User> findAll();
+    List<User> findAll(Tenant tenant);
     List<User> findByLastname(String lastname);
     User findByEmail(String email);  
     List<User> findByRol(String rol);

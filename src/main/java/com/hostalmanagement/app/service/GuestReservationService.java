@@ -10,21 +10,27 @@ import org.springframework.stereotype.Service;
 import com.hostalmanagement.app.DTO.GuestDTO;
 import com.hostalmanagement.app.DTO.GuestReservationDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
+import com.hostalmanagement.app.dao.CheckInOutDAO;
 import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.dao.GuestReservationDAO;
 import com.hostalmanagement.app.dao.ReservationDAO;
 import com.hostalmanagement.app.dao.ReservationJpaDAO;
 import com.hostalmanagement.app.dao.RoomDAO;
+import com.hostalmanagement.app.model.CheckInOut;
 import com.hostalmanagement.app.model.Guest;
 import com.hostalmanagement.app.model.GuestReservation;
 import com.hostalmanagement.app.model.Reservation;
 import com.hostalmanagement.app.model.Reservation.ReservationState;
 import com.hostalmanagement.app.model.Room;
+import com.hostalmanagement.app.model.Tenant;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class GuestReservationService {
+
+    @Autowired
+    private TenantService tenantService;
 
     @Autowired
     private GuestReservationDAO guestReservationDAO;
@@ -41,6 +47,9 @@ public class GuestReservationService {
     @Autowired
     private ReservationJpaDAO reservationJpaDAO;
 
+    @Autowired
+    private CheckInOutDAO checkInOutDAO;
+
     private Reservation createReservationEntity(GuestReservationDTO dto) {
         ReservationDTO reservationDTO = dto.getReservationDTO();
         Room room = roomDAO.findById(reservationDTO.getRoomId());
@@ -55,13 +64,15 @@ public class GuestReservationService {
 
     private Guest getOrCreateGuest(GuestDTO guestDTO) {
         Guest guest = guestDAO.findByNIF(guestDTO.getNif());
+        Tenant tenant = tenantService.findById(guestDTO.getTenantId());
         if (guest == null) {
             guest = new Guest(
                     guestDTO.getEmail(),
                     guestDTO.getLastname(),
                     guestDTO.getName(),
                     guestDTO.getNif(),
-                    guestDTO.getPhone());
+                    guestDTO.getPhone(),
+                    tenant);
             guestDAO.save(guest);
         }
         return guest;
@@ -69,17 +80,42 @@ public class GuestReservationService {
 
     @Transactional
     public Reservation createGuestReservation(GuestReservationDTO dto) {
+        // Step 1: Create and save the Reservation entity
         Reservation reservation = createReservationEntity(dto);
-        reservation = reservationJpaDAO.saveAndFlush(reservation); // reassignment
+        reservation = reservationJpaDAO.saveAndFlush(reservation); // Save and flush the reservation to get the saved
+                                                                   // entity
 
-        final Reservation savedReservation = reservation; // now effectively final
+        final Reservation savedReservation = reservation; // Now this is effectively final to be used in lambda
+                                                          // expressions
 
+        // Step 2: Iterate over the guests and create Guest entities, linking them with
+        // the reservation
         dto.getReservationDTO().getGuests().forEach(guestDTO -> {
+            // Step 2.1: Get or create a guest based on the provided guest data
             Guest guest = getOrCreateGuest(guestDTO);
+
+            // Step 2.2: Save the GuestReservation which links the guest with the
+            // reservation
             guestReservationDAO.save(new GuestReservation(guest, savedReservation));
         });
 
+        // Step 3: Create Check-in and Check-out records
+        createCheckInOut(savedReservation);
+
+        // Step 4: Return the saved reservation
         return savedReservation;
+    }
+
+    // Method to create check-in and check-out entries for the reservation
+    private void createCheckInOut(Reservation reservation) {
+        // Create check-in entry
+        CheckInOut checkInOut = new CheckInOut();
+        checkInOut.setReservation(reservation);
+        checkInOut.setInDate(reservation.getInDate()); // The check-in date is the inDate of the reservation
+        checkInOut.setOutDate(reservation.getOutDate()); // The check-out date is the outDate of the reservation
+
+        // Save the check-in/out details
+        checkInOutDAO.save(checkInOut);
     }
 
     public GuestReservationDTO findGuestReservaitonByReservationId(Long Id) {
@@ -121,9 +157,11 @@ public class GuestReservationService {
 
         // Find the Guest entity by NIF
         Guest guest = guestDAO.findByNIF(guestDTO.getNif());
+        Tenant tenant = tenantService.findById(guestDTO.getTenantId());
+
         if (guest == null) {
             guest = new Guest(guestDTO.getEmail(), guestDTO.getLastname(), guestDTO.getName(), guestDTO.getNif(),
-                    guestDTO.getPhone());
+                    guestDTO.getPhone(), tenant);
             throw new IllegalArgumentException("Guest not found with NIF: " + guestDTO.getNif());
         }
 

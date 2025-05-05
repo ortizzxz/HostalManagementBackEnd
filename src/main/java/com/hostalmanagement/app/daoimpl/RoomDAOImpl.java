@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hostalmanagement.app.dao.RoomDAO;
 import com.hostalmanagement.app.model.Room;
+import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.model.Room.RoomState;
 
 import jakarta.persistence.EntityManager;
@@ -29,8 +30,10 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public List<Room> findAll() {
-        return entityManager.createQuery("from Room", Room.class).getResultList(); 
+    public List<Room> findAll(Tenant tenant) {
+        return entityManager.createQuery("from Room r WHERE r.tenant like :tenant", Room.class)
+                .setParameter("tenant", tenant)
+                .getResultList();
     }
 
     @Override

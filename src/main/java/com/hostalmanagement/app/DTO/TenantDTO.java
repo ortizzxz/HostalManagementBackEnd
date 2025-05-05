@@ -3,17 +3,16 @@ package com.hostalmanagement.app.DTO;
 public class TenantDTO {
     private Long id;
     private String name;
-    private String description;
 
     public TenantDTO() {
     }
 
-    public TenantDTO(Long id, String name, String description) {
+    public TenantDTO(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.description = description;
     }
 
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -30,20 +29,11 @@ public class TenantDTO {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public String toString() {
         return "TenantDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
                 '}';
     }
 }

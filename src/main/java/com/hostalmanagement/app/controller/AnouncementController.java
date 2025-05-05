@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.hostalmanagement.app.service.RoomService;
+import com.hostalmanagement.app.service.TenantService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +20,7 @@ import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.AnouncementDTO;
 import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.dao.AnouncementDAO;
+import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.service.AnouncementService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,6 +47,9 @@ public class AnouncementController {
 
     @Autowired
     private AnouncementService anouncementService;
+    
+    @Autowired
+    private TenantService tenantService;
 
     AnouncementController(SecurityConfig securityConfig, 
                             HostalManagementApplication hostalManagementApplication, RoomController roomController, RoomService roomService, SecurityFilterChain securityFilterChain){
@@ -56,8 +62,11 @@ public class AnouncementController {
 
     //Buscar todas los anuncions
     @GetMapping
-    public ResponseEntity<List<AnouncementDTO>> findAllAnouncements(){
-        List<AnouncementDTO> anouncements = anouncementService.findAllAnouncements();
+    public ResponseEntity<List<AnouncementDTO>> findAllAnouncements(Long tenantId){
+        Tenant tenant = tenantService.findById(tenantId);
+
+        
+        List<AnouncementDTO> anouncements = anouncementService.findAllAnouncements(tenant);
         return ResponseEntity.ok(anouncements);
     }
 

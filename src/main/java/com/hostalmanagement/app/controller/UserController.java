@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hostalmanagement.app.DTO.UserDTO;
 import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.config.SecurityConfig;
+import com.hostalmanagement.app.model.Tenant;
+import com.hostalmanagement.app.service.TenantService;
 import com.hostalmanagement.app.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,16 +37,22 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TenantService tenantService;
+
     UserController(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
         this.hostalManagementApplication = hostalManagementApplication;
         this.securityConfig = securityConfig;
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> findAllUsers() {
-        List<UserDTO> users = userService.findAllUsers();
+    public ResponseEntity<List<UserDTO>> findAllUsers(@RequestParam Long tenantId) {
+        Tenant tenant = tenantService.findById(tenantId);
+
+        List<UserDTO> users = userService.findAllUsers(tenant);
         return ResponseEntity.ok(users);
     }
+
 
     // Buscar usuario por ID
     @GetMapping("/{id}")

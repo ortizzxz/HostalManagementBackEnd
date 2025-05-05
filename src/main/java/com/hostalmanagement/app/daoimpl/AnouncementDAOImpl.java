@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hostalmanagement.app.dao.AnouncementDAO;
 import com.hostalmanagement.app.model.Anouncement;
+import com.hostalmanagement.app.model.Tenant;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,8 +25,10 @@ public class AnouncementDAOImpl implements AnouncementDAO {
     }
 
     @Override
-    public List<Anouncement> getAllAnouncements() {
-        return entityManager.createQuery("FROM Anouncement a", Anouncement.class).getResultList();
+    public List<Anouncement> getAllAnouncements(Tenant tenant) {
+        return entityManager.createQuery("FROM Anouncement a WHERE a.tenant like :tenant", Anouncement.class)
+                        .setParameter("tenant", tenant)
+                        .getResultList();
     }
 
     @Override

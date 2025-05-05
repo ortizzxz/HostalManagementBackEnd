@@ -16,9 +16,11 @@ import com.hostalmanagement.app.DTO.GuestReservationDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
 import com.hostalmanagement.app.DTO.RoomDTO;
 import com.hostalmanagement.app.config.SecurityConfig;
+import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.service.GuestReservationService;
 import com.hostalmanagement.app.service.GuestService;
 import com.hostalmanagement.app.service.ReservationService;
+import com.hostalmanagement.app.service.TenantService;
 
 import jakarta.transaction.Transactional;
 
@@ -39,14 +41,18 @@ public class ReservationController {
     @Autowired
     private GuestReservationService guestReservationService;
 
+    @Autowired
+    private TenantService tenantService;
+
     ReservationController(HostalManagementApplication hostalManagementApplication, SecurityConfig securityConfig) {
         this.hostalManagementApplication = hostalManagementApplication;
         this.securityConfig = securityConfig;
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationDTO>> findAllReservations(){
-        List<ReservationDTO> reservations = reservationService.findAllReservations();
+    public ResponseEntity<List<ReservationDTO>> findAllReservations(Long tenantId){
+        Tenant tenant = tenantService.findById(tenantId);
+        List<ReservationDTO> reservations = reservationService.findAllReservations(tenant);
         return ResponseEntity.ok(reservations);
     }
 
@@ -54,7 +60,7 @@ public class ReservationController {
     @Transactional
     public ResponseEntity<?> createReservation(@RequestBody ReservationDTO request) {
         // Create the reservation and save it
-        ReservationDTO reservationDTO = new ReservationDTO(null, request.getRoomId(), request.getInDate(), request.getOutDate(), request.getState(), request.getGuests());
+        ReservationDTO reservationDTO = new ReservationDTO(null, request.getRoomId(), request.getInDate(), request.getOutDate(), request.getState(), request.getGuests(), request.getTenantId());
         
         // Call the service method to create the reservation and guest reservations
         guestReservationService.createGuestReservation(new GuestReservationDTO(request.getGuests(), reservationDTO));

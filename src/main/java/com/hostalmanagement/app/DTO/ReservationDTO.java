@@ -11,18 +11,28 @@ public class ReservationDTO {
     private LocalDateTime outDate;
     private String state;
     private List<GuestDTO> guests;
+    private Long tenantId;
 
     public ReservationDTO() {
     }
 
     public ReservationDTO(Long id, Long roomId, LocalDateTime inDate, LocalDateTime outDate, String state,
-            List<GuestDTO> guests) {
+            List<GuestDTO> guests, Long tenantId) {
         this.id = id;
         this.roomId = roomId;
         this.inDate = inDate;
         this.outDate = outDate;
         this.state = state;
         this.guests = guests;
+        this.tenantId = tenantId;
+    }
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
     }
 
     public Long getRoomId() {

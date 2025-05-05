@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.hostalmanagement.app.dao.UserDAO;
+import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.model.User;
 
 import jakarta.persistence.EntityManager;
@@ -26,8 +27,9 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public List<User> findAll(){
-        return entityManager.createQuery("FROM User u", User.class)
+    public List<User> findAll(Tenant tenant){
+        return entityManager.createQuery("FROM User u WHERE u.tenant like :tenant", User.class)
+                .setParameter("tenant", tenant)
                 .getResultList();
     }
 

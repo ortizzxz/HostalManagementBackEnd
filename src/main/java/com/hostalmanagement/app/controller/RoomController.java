@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.RoomDTO;
 import com.hostalmanagement.app.config.SecurityConfig;
+import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.service.RoomService;
+import com.hostalmanagement.app.service.TenantService;
 
 
 @RestController
@@ -32,6 +34,9 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
+    @Autowired
+    private TenantService tenantService;
+
     RoomController(HostalManagementApplication hostalManagementApplication, 
                    SecurityConfig securityConfig){
         this.hostalManagementApplication = hostalManagementApplication;
@@ -39,8 +44,10 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RoomDTO>> findAllRooms(){
-        List<RoomDTO> rooms = roomService.findAllRooms();
+    public ResponseEntity<List<RoomDTO>> findAllRooms(Long tenantId){
+        Tenant tenant = tenantService.findById(tenantId);
+
+        List<RoomDTO> rooms = roomService.findAllRooms(tenant);
         return ResponseEntity.ok(rooms);
     }
 

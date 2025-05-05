@@ -5,6 +5,8 @@ import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,6 +21,9 @@ public class Guest {
     private String email;
     private String phone;
     private LocalDateTime registerDate;
+    @ManyToOne(optional = false) // each room must belong to a tenant
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant;
 
     @OneToMany(mappedBy = "guest")
     private Set<GuestReservation> reservations;
@@ -27,13 +32,30 @@ public class Guest {
         this.registerDate = LocalDateTime.now();
     }
 
-    public Guest(String email, String lastname, String name, String nif, String phone) {
+    public Guest(String email, String lastname, String name, String nif, String phone, Tenant tenant) {
         this.email = email;
         this.lastname = lastname;
         this.name = name;
         this.nif = nif;
         this.phone = phone;
         this.registerDate = LocalDateTime.now();
+        this.tenant = tenant;
+    }
+
+    public String getNif() {
+        return nif;
+    }
+
+    public void setNif(String nif) {
+        this.nif = nif;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 
     public String getNIF() {
@@ -92,12 +114,12 @@ public class Guest {
         this.reservations = reservations;
     }
 
-
     @Override // as a JSON
     public String toString() {
         return "Guest{ NIF=" + getNIF() + ", Name=" + getName() + ",Lastname=" + getLastname()
                 + ", Email=" + getEmail() + ",Phone()=" + getPhone() + ", Register Date="
-                + getRegisterDate() + "}";
+                + getRegisterDate() + ", Tenant="
+                + getTenant() +  "}";
     }
 
 }

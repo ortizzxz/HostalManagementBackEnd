@@ -7,14 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
+import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.model.Guest;
+import com.hostalmanagement.app.model.Tenant;
 
 @Service
 public class GuestService {
 
     @Autowired
     private GuestDAO guestDAO;
+
+    @Autowired
+    private TenantService tenantService;
 
     public GuestDTO createGuest(GuestDTO guestDTO) {
         try{
@@ -42,18 +47,22 @@ public class GuestService {
             guest.getName(),
             guest.getLastname(),
             guest.getEmail(),
-            guest.getPhone()
+            guest.getPhone(),
+            guest.getTenant().getId()
         );
     }
 
     private Guest toEntity(GuestDTO guestDTO) {
+        Tenant tenant = tenantService.findById(guestDTO.getTenantId());
+
         return new Guest(
             guestDTO.getNif(),
             guestDTO.getName(),
             guestDTO.getLastname(),
             guestDTO.getEmail(),
-            guestDTO.getPhone()
-        );
+            guestDTO.getPhone(),
+            tenant        
+            );
     }
 
 
