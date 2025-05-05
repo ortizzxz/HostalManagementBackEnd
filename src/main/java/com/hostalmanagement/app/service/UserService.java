@@ -124,8 +124,7 @@ public class UserService {
             throw new Exception("Invalid credentials");
         }
 
-        // Assuming your User entity has a getTenantId() method
-        return jwtService.generateToken(user.getEmail(), user.getTenant().getId());
+        return jwtService.generateToken(user.getEmail(), user.getTenant().getId(), user.getRol().toString());
     }
 
 }
