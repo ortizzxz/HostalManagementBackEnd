@@ -16,14 +16,15 @@ public class JwtService {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512); // Automatically generates a key for HS512
     private final long EXPIRATION_TIME = 6 * 60 * 60 * 1000; // 6 hours
 
-    public String generateToken(String email, Long tenantId) {
+    public String generateToken(String email, Long tenantId, String rol) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         // Build the JWT token with the user's email and tenantId (optional)
         return Jwts.builder()
                 .setSubject(email) // User's email is the subject
-                .claim("tenantId", tenantId) // Add tenantId as a claim (optional)
+                .claim("tenantId", tenantId) // Add tenantId as a claim (optional).
+                .claim("rol", rol)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key) // Use the generated key

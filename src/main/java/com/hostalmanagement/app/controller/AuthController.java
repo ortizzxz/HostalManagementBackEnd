@@ -28,7 +28,7 @@ public class AuthController {
         }
 
         // Generate JWT token for the user with email and tenant ID
-        String token = jwtService.generateToken(user.getEmail(), user.getTenant().getId());
+        String token = jwtService.generateToken(user.getEmail(), user.getTenant().getId(), user.getRol().toString());
 
         // Return the token as the response body
         return ResponseEntity.ok(token);
