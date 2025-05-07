@@ -58,7 +58,7 @@ public class ReservationController {
 
     @GetMapping("/checkins")
     public ResponseEntity<List<CheckInOutDTO>> getAllCheckIns(Long tenantId) {
-        List<CheckInOutDTO> checkins = checkInOutService.findAllCheckInOuts(); 
+        List<CheckInOutDTO> checkins = checkInOutService.findAllCheckInOuts(tenantId); 
 
         return ResponseEntity.ok(checkins);
     }

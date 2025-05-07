@@ -8,11 +8,11 @@ public class AnouncementDTO {
     private String content;
     private LocalDateTime postDate;
     private LocalDateTime expirationDate;
-    private Long tenant;
+    private TenantDTO tenant;  // Cambiado a TenantDTO
 
-    public AnouncementDTO(){}
+    public AnouncementDTO() {}
 
-    public AnouncementDTO(Long id, String title, String content, LocalDateTime postDate, LocalDateTime expirationDate, Long tenant) {
+    public AnouncementDTO(Long id, String title, String content, LocalDateTime postDate, LocalDateTime expirationDate, TenantDTO tenant) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -61,11 +61,11 @@ public class AnouncementDTO {
         this.expirationDate = expirationDate;
     }
 
-    public Long getTenant() {
+    public TenantDTO getTenant() {
         return tenant;
     }
 
-    public void setTenant(Long tenant) {
+    public void setTenant(TenantDTO tenant) {
         this.tenant = tenant;
     }
 }

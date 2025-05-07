@@ -1,38 +1,41 @@
 package com.hostalmanagement.app.daoimpl;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
-import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.model.Guest;
-import com.hostalmanagement.app.service.TenantService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class GuestDAOImpl implements GuestDAO{
+public class GuestDAOImpl implements GuestDAO {
+
     @PersistenceContext
-    EntityManager entityManager;
-
-    @Autowired
-    private TenantService tenantService;
+    private EntityManager entityManager;
 
     @Override
-    public Guest findByNIF(String NIF) {
-        return entityManager.find(Guest.class, NIF);
+    public Optional<Guest> findByNIF(String NIF) {
+        try {
+            Guest guest = entityManager.createQuery("FROM Guest g WHERE g.NIF = :NIF", Guest.class)
+                                       .setParameter("NIF", NIF)
+                                       .getSingleResult();
+            return Optional.ofNullable(guest);
+        } catch (Error e) {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public List<Guest> findAll(){
-        return entityManager.createQuery("from Huesped", Guest.class).getResultList();
+    public List<Guest> findAll() {
+        return entityManager.createQuery("FROM Guest", Guest.class).getResultList();
     }
-    
+
     @Override
     @Transactional
     public void save(Guest guest) {
@@ -48,15 +51,13 @@ public class GuestDAOImpl implements GuestDAO{
     @Override
     @Transactional
     public void delete(String NIF) {
-        Guest guest = findByNIF(NIF);
-        if(guest != null){
-            entityManager.remove(guest);
-        }
+        Optional<Guest> guestOpt = findByNIF(NIF);
+        guestOpt.ifPresent(entityManager::remove);
     }
 
     @Override
     public GuestDTO toGuestDTO(Guest guest) {
-        GuestDTO guestDTO = new GuestDTO(
+        return new GuestDTO(
             guest.getNIF(),
             guest.getName(),
             guest.getLastname(),
@@ -64,8 +65,5 @@ public class GuestDAOImpl implements GuestDAO{
             guest.getPhone(),
             guest.getTenant().getId()
         );
-        
-        return guestDTO;
     }
-    
 }

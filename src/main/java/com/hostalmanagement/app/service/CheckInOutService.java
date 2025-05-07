@@ -21,17 +21,14 @@ import java.util.stream.Collectors;
 public class CheckInOutService {
 
     @Autowired
-    private GuestDAO guestDAO;
-
-    @Autowired
     private ReservationService reservationService;
 
     @Autowired
     private CheckInOutDAO checkInOutDAO;
 
-    public List<CheckInOutDTO> findAllCheckInOuts() {
+    public List<CheckInOutDTO> findAllCheckInOuts(Long tenantId) {
         // List<Guest> guests = guestDAO.findAll();
-        List<CheckInOut> checkins = checkInOutDAO.findAll();
+        List<CheckInOut> checkins = checkInOutDAO.findAll(tenantId);
         return checkins.stream().map(this::toDTO).collect(Collectors.toList());
     }
 

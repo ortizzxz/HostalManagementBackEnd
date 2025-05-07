@@ -2,6 +2,7 @@ package com.hostalmanagement.app.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,20 +64,34 @@ public class GuestReservationService {
     }
 
     private Guest getOrCreateGuest(GuestDTO guestDTO) {
-        Guest guest = guestDAO.findByNIF(guestDTO.getNif());
-        Tenant tenant = tenantService.findById(guestDTO.getTenantId());
-        if (guest == null) {
-            guest = new Guest(
+        // Find the guest by NIF using Optional
+        Optional<Guest> guestOpt = guestDAO.findByNIF(guestDTO.getNif());
+        
+        // If the guest does not exist, create and save a new one
+        if (!guestOpt.isPresent()) {
+            Tenant tenant = tenantService.findById(guestDTO.getTenantId());
+            
+            // Create a new guest instance
+            Guest newGuest = new Guest(
                     guestDTO.getEmail(),
                     guestDTO.getLastname(),
                     guestDTO.getName(),
                     guestDTO.getNif(),
                     guestDTO.getPhone(),
-                    tenant);
-            guestDAO.save(guest);
+                    tenant
+            );
+            
+            // Save the new guest to the database
+            guestDAO.save(newGuest);
+            
+            // Return the newly created guest
+            return newGuest;
         }
-        return guest;
+        
+        // If the guest exists, return the existing guest
+        return guestOpt.get();
     }
+    
 
     @Transactional
     public Reservation createGuestReservation(GuestReservationDTO dto) {
@@ -154,29 +169,35 @@ public class GuestReservationService {
         // Assuming guestDTO is a list of GuestDTOs, we'll retrieve the first guest from
         // the list
         GuestDTO guestDTO = guestReservationDTO.getGuestDTO().get(0); // Assuming there's always at least one guest
-
+    
         // Find the Guest entity by NIF
-        Guest guest = guestDAO.findByNIF(guestDTO.getNif());
+        Optional<Guest> guestOpt = guestDAO.findByNIF(guestDTO.getNif());
         Tenant tenant = tenantService.findById(guestDTO.getTenantId());
-
-        if (guest == null) {
+    
+        // Check if the guest is present, otherwise create a new one
+        Guest guest;
+        if (guestOpt.isPresent()) {
+            guest = guestOpt.get();
+        } else {
+            // If guest not found, create a new one and persist it
             guest = new Guest(guestDTO.getEmail(), guestDTO.getLastname(), guestDTO.getName(), guestDTO.getNif(),
-                    guestDTO.getPhone(), tenant);
-            throw new IllegalArgumentException("Guest not found with NIF: " + guestDTO.getNif());
+                              guestDTO.getPhone(), tenant);
+            guestDAO.save(guest); // Save the new guest in the database
         }
-
-        // Find the Reservation entity by the ID
+    
+        // Find the Reservation entity by the Room ID (assuming this returns Reservation or null)
         ReservationDTO reservationDTO = guestReservationDTO.getReservationDTO();
-        Reservation reservation = reservationDAO.findById(reservationDTO.getRoomId());
-        if (reservation == null) {
-            // Handle the case where the reservation does not exist, e.g., throw an
-            // exception
+        Reservation reservation = reservationDAO.findById(reservationDTO.getRoomId());  // Returns Reservation or null
+    
+        if (reservation != null) {
+            // Return the new GuestReservation entity
+            return new GuestReservation(guest, reservation);
+        } else {
+            // Handle the case where the reservation does not exist
             throw new IllegalArgumentException("Reservation not found with ID: " + reservationDTO.getRoomId());
         }
-
-        // Now create and return the GuestReservation entity
-        return new GuestReservation(guest, reservation);
     }
+    
 
     // public GuestReservationDTO updateGuestReservation(String NIF, GuestDTO
     // guestDTO, ReservationDTO reservationDTO) {

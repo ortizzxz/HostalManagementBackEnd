@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hostalmanagement.app.DTO.AnouncementDTO;
+import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.AnouncementDAO;
 import com.hostalmanagement.app.dao.TenantDAO; // Assuming you have this
 import com.hostalmanagement.app.model.Anouncement;
@@ -17,6 +18,9 @@ public class AnouncementService {
     
     @Autowired
     private AnouncementDAO anouncementDAO;
+    
+    @Autowired
+    private TenantService tenantService;
     
     @Autowired
     private TenantDAO tenantDAO; // Inject TenantDAO to get Tenant by ID
@@ -36,7 +40,7 @@ public class AnouncementService {
     // Crear un anuncio
     public AnouncementDTO createAnouncement(AnouncementDTO anouncementDTO) {
         try {
-            Tenant tenant = tenantDAO.findById(anouncementDTO.getTenant()); // Fetch tenant by ID
+            Tenant tenant = tenantDAO.findById(anouncementDTO.getTenant().getId()); // Fetch tenant by ID
             if (tenant == null) {
                 throw new IllegalArgumentException("Tenant not found");
             }
@@ -58,7 +62,7 @@ public class AnouncementService {
     public AnouncementDTO updateAnouncement(Long id, AnouncementDTO anouncementDTO){
         Anouncement existingAnouncement = anouncementDAO.findById(id);
         if (existingAnouncement != null) {
-            Tenant tenant = tenantDAO.findById(anouncementDTO.getTenant());
+            Tenant tenant = tenantDAO.findById(anouncementDTO.getTenant().getId());
             if (tenant == null) {
                 throw new IllegalArgumentException("Tenant not found");
             }
@@ -86,13 +90,14 @@ public class AnouncementService {
 
     // Convertir entidad Anouncement a DTO
     private AnouncementDTO toDTO(Anouncement anouncement) {
+        TenantDTO tenantDTO = tenantService.toDTO(anouncement.getTenant());
         return new AnouncementDTO(
             anouncement.getId(),
             anouncement.getTitle(),
             anouncement.getContent(),
             anouncement.getPostDate(),
             anouncement.getExpirationDate(),
-            anouncement.getTenant() != null ? anouncement.getTenant().getId() : null
+            tenantDTO
         );
     }
 

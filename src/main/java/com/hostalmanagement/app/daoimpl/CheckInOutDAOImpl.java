@@ -2,6 +2,7 @@ package com.hostalmanagement.app.daoimpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -19,36 +20,47 @@ public class CheckInOutDAOImpl implements CheckInOutDAO {
     EntityManager entityManager;
 
     @Override
-    public CheckInOut findById(final Long id) {
-        return entityManager.find(CheckInOut.class, id);
+    public Optional<CheckInOut> findById(final Long id) {
+        return Optional.ofNullable(entityManager.find(CheckInOut.class, id));
     }
     
     @Override
-    public List<CheckInOut> findAll() {
-        return entityManager.createQuery("FROM CheckInOut c", CheckInOut.class).getResultList();
+    public List<CheckInOut> findAll(Long tenantId) {
+        return entityManager.createQuery(
+                "FROM CheckInOut c WHERE c.reservation.room.tenant.id = :tenantId",
+                CheckInOut.class)
+                .setParameter("tenantId", tenantId)
+                .getResultList();
     }
 
     @Override
-    public CheckInOut findByReservation(final Long reservationId) {
-        return entityManager.createQuery("FROM CheckInOut c WHERE c.idReserva LIKE :idReserva", CheckInOut.class)
+    public Optional<CheckInOut> findByReservation(final Long reservationId) {
+        List<CheckInOut> results = entityManager.createQuery(
+                "FROM CheckInOut c WHERE c.reservation.id = :idReserva",
+                CheckInOut.class)
                 .setParameter("idReserva", reservationId)
-                .getSingleResult();
+                .getResultList();
+    
+        return results.stream().findFirst(); // returns Optional.empty() if list is empty
     }
-
+    
     @Override
-    public List<CheckInOut> getByDateIn(LocalDateTime fechaIn) {
-        return entityManager.createQuery("FROM CheckInOut c WHERE c.fechaIn LIKE :fechaIn", CheckInOut.class)
+    public List<CheckInOut> getByInDate(LocalDateTime fechaIn) {
+        return entityManager.createQuery(
+                "FROM CheckInOut c WHERE c.inDate = :fechaIn",
+                CheckInOut.class)
                 .setParameter("fechaIn", fechaIn)
                 .getResultList();
     }
 
     @Override
-    public List<CheckInOut> getByDateOut(LocalDateTime fechaOut) {
-        return entityManager.createQuery("FROM CheckInOut c WHERE c.fechaOut LIKE :fechaOut", CheckInOut.class)
+    public List<CheckInOut> getByOutDate(LocalDateTime fechaOut) {
+        return entityManager.createQuery(
+                "FROM CheckInOut c WHERE c.outDate = :fechaOut",
+                CheckInOut.class)
                 .setParameter("fechaOut", fechaOut)
                 .getResultList();
     }
-
 
     @Override
     @Transactional
@@ -59,16 +71,16 @@ public class CheckInOutDAOImpl implements CheckInOutDAO {
     @Override
     @Transactional
     public void update(CheckInOut checkInOut) {
-        entityManager.persist(checkInOut);
+        entityManager.merge(checkInOut);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        CheckInOut checkInOut = findById(id);
-        if(checkInOut != null){
+        Optional<CheckInOut> checkInOut = findById(id);
+        if (checkInOut != null) {
             entityManager.remove(checkInOut);
         }
     }
-    
+
 }

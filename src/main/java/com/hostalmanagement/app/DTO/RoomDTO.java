@@ -8,18 +8,18 @@ public class RoomDTO {
     private int capacity;
     private double baseRate;
     private RoomState state;
-    private TenantDTO tenantDTO;
+    private TenantDTO tenant;
 
     public RoomDTO(){}
 
-    public RoomDTO(Long id, int number, String type, int capacity, double baseRate, RoomState state, TenantDTO tenantDTO){
+    public RoomDTO(Long id, int number, String type, int capacity, double baseRate, RoomState state, TenantDTO tenant){
         this.id = id;
         this.number = number;
         this.type = type;
         this.capacity = capacity;
         this.baseRate = baseRate;
         this.state = state;
-        this.tenantDTO = tenantDTO;
+        this.tenant = tenant;
     }
 
     public Long getId() {
@@ -71,11 +71,11 @@ public class RoomDTO {
     }
 
     public TenantDTO getTenantDTO() {
-        return tenantDTO;
+        return tenant;
     }
 
-    public void setTenantDTO(TenantDTO tenantDTO) {
-        this.tenantDTO = tenantDTO;
+    public void setTenant(TenantDTO tenantDTO) {
+        this.tenant = tenantDTO;
     }
 
     
