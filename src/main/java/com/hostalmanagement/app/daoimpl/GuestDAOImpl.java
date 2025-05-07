@@ -20,17 +20,21 @@ public class GuestDAOImpl implements GuestDAO {
     private EntityManager entityManager;
 
     @Override
-    public Optional<Guest> findByNIF(String NIF) {
+    public Optional<Guest> findByNIF(String nif) {
         try {
-            Guest guest = entityManager.createQuery("FROM Guest g WHERE g.NIF = :NIF", Guest.class)
-                                       .setParameter("NIF", NIF)
-                                       .getSingleResult();
-            return Optional.ofNullable(guest);
-        } catch (Error e) {
+            List<Guest> guests = entityManager.createQuery("FROM Guest g WHERE g.nif = :nif", Guest.class)
+                                              .setParameter("nif", nif)
+                                              .getResultList();
+    
+            // Return the first guest if the list is not empty, otherwise return Optional.empty()
+            return guests.isEmpty() ? Optional.empty() : Optional.of(guests.get(0));
+        } catch (Exception e) {
+            // Log the exception or handle it as needed
+            e.printStackTrace();
             return Optional.empty();
         }
     }
-
+    
     @Override
     public List<Guest> findAll() {
         return entityManager.createQuery("FROM Guest", Guest.class).getResultList();

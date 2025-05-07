@@ -28,5 +28,4 @@ public class TenantService {
         tenant.setName(tenantDTO.getName());
         return tenant;
     }
-    
 }

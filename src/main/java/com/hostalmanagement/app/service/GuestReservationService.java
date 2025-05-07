@@ -64,33 +64,33 @@ public class GuestReservationService {
     }
 
     private Guest getOrCreateGuest(GuestDTO guestDTO) {
-        // Find the guest by NIF using Optional
-        Optional<Guest> guestOpt = guestDAO.findByNIF(guestDTO.getNif());
-        
-        // If the guest does not exist, create and save a new one
-        if (!guestOpt.isPresent()) {
-            Tenant tenant = tenantService.findById(guestDTO.getTenantId());
-            
-            // Create a new guest instance
-            Guest newGuest = new Guest(
-                    guestDTO.getEmail(),
-                    guestDTO.getLastname(),
-                    guestDTO.getName(),
-                    guestDTO.getNif(),
-                    guestDTO.getPhone(),
-                    tenant
-            );
-            
-            // Save the new guest to the database
-            guestDAO.save(newGuest);
-            
-            // Return the newly created guest
-            return newGuest;
+        // Step 1: Attempt to find the guest by NIF
+        Optional<Guest> existingGuestOpt = guestDAO.findByNIF(guestDTO.getNif());
+    
+        // Step 2: If the guest exists, return the existing one
+        if (existingGuestOpt.isPresent()) {
+            return existingGuestOpt.get();
         }
-        
-        // If the guest exists, return the existing guest
-        return guestOpt.get();
+    
+        // Step 3: If the guest does not exist, create a new guest
+        // Ensure that the tenant is correctly set
+        Tenant tenant = tenantService.findById(guestDTO.getTenantId());  // Assuming you have a service to fetch the tenant by ID
+    
+        // Create the new Guest object
+        Guest newGuest = new Guest(
+            guestDTO.getEmail(),
+            guestDTO.getLastname(),
+            guestDTO.getName(),
+            guestDTO.getNif(),
+            guestDTO.getPhone(),
+            tenant // Link the tenant here
+        );
+    
+        // Step 4: Save the new guest in the database
+        guestDAO.save(newGuest);  // Save the new guest
+        return newGuest;  // Return the saved guest
     }
+    
     
 
     @Transactional

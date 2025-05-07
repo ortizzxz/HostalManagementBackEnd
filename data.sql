@@ -30,3 +30,4 @@ ALTER TABLE guest_reservation DROP FOREIGN KEY FKsj4i71ugyybexvvpy8ep618xg;
 ALTER TABLE guest_reservation
   ADD CONSTRAINT fk_guest_reservation
   FOREIGN KEY (id_reserva) REFERENCES reservation(id);
+
