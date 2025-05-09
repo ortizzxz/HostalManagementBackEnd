@@ -197,38 +197,6 @@ public class GuestReservationService {
             throw new IllegalArgumentException("Reservation not found with ID: " + reservationDTO.getRoomId());
         }
     }
-    
-
-    // public GuestReservationDTO updateGuestReservation(String NIF, GuestDTO
-    // guestDTO, ReservationDTO reservationDTO) {
-    // GuestReservation existingGuestReservation =
-    // guestReservationDAO.findByNIF(NIF);
-
-    // if (existingGuestReservation != null) {
-    // // Update Guest entity
-    // Guest guest = existingGuestReservation.getGuest();
-    // guest.setName(guestDTO.getName());
-    // guest.setLastname(guestDTO.getLastname());
-    // guest.setEmail(guestDTO.getEmail());
-    // guest.setPhone(guestDTO.getPhone());
-    // guestDAO.save(guest);
-
-    // // Optional: Update Reservation entity (or reassign it)
-    // Reservation reservation = existingGuestReservation.getReservation();
-    // reservation.setInDate(reservationDTO.getInDate());
-    // reservation.setOutDate(reservationDTO.getOutDate());
-    // reservation.setStatus(Reservation.ReservationState.valueOf(reservationDTO.getState()));
-    // reservationDAO.save(reservation);
-
-    // // Save GuestReservation (if needed)
-    // guestReservationDAO.save(existingGuestReservation);
-
-    // // Return updated DTO
-    // return new GuestReservationDTO(guestDTO, reservationDTO);
-    // }
-
-    // return null; // or throw an exception if not found
-    // }
 
     // TODO: Logic
     public boolean deleteGuestReservation(String NIF) {

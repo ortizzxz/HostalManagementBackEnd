@@ -39,7 +39,7 @@ public class UserService {
         return users.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    private UserDTO toDTO(User user) {
+    protected UserDTO toDTO(User user) {
         String rolName = user.getRol() != null ? user.getRol().name().toUpperCase() : "UNKNOWN";
         Long tenantId = user.getTenant() != null ? user.getTenant().getId() : null;
         return new UserDTO(
@@ -52,7 +52,7 @@ public class UserService {
                 tenantId);
     }
 
-    private User toEntity(UserDTO userDTO) {
+    protected User toEntity(UserDTO userDTO) {
         Tenant tenant = tenantDAO.findById(userDTO.getTenant());
         if (tenant == null) {
             throw new IllegalArgumentException("Tenant ID not found: " + userDTO.getTenant());

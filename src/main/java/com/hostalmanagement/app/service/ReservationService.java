@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
-import com.hostalmanagement.app.DTO.GuestReservationDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
-import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.ReservationDAO;
 import com.hostalmanagement.app.dao.RoomDAO;
 import com.hostalmanagement.app.model.Guest;
@@ -99,7 +97,6 @@ public class ReservationService {
                 .stream()
                 .map(gr -> {
                     Guest g = gr.getGuest();
-                    TenantDTO tenant = tenantService.toDTO(g.getTenant());
                     return new GuestDTO(
                             g.getNIF(),
                             g.getName(),

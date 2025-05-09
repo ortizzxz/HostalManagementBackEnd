@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
-import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.model.Guest;
 import com.hostalmanagement.app.model.Tenant;

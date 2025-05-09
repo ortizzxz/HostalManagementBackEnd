@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.hostalmanagement.app.DTO.RoomDTO;
 import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.RoomDAO;
-import com.hostalmanagement.app.dao.TenantDAO;
 import com.hostalmanagement.app.model.Room;
 import com.hostalmanagement.app.model.Tenant;
 

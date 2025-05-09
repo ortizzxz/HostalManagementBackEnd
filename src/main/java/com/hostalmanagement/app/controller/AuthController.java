@@ -4,7 +4,6 @@ import com.hostalmanagement.app.DTO.UserDTO;
 import com.hostalmanagement.app.service.JwtService;
 import com.hostalmanagement.app.service.UserService;
 import com.hostalmanagement.app.model.User;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
