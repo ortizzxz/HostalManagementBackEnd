@@ -83,8 +83,6 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO userDTO, HttpServletResponse response) {
         try {
-            // Assuming your service has the login method which validates email/password and
-            // generates a JWT token
             String token = userService.loginUser(userDTO);
             response.setHeader("Authorization", "Bearer " + token);
             return ResponseEntity.ok(userDTO); // Respond with the user details
