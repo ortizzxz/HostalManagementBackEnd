@@ -1,6 +1,8 @@
 package com.hostalmanagement.app.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
+import com.hostalmanagement.app.dao.GuestDAO;
 import com.hostalmanagement.app.dao.ReservationDAO;
 import com.hostalmanagement.app.dao.RoomDAO;
 import com.hostalmanagement.app.model.Guest;
@@ -27,6 +30,9 @@ public class ReservationService {
 
     @Autowired
     RoomDAO roomDAO;
+
+    @Autowired
+    GuestDAO guestDAO;
 
     @Autowired
     TenantService tenantService;
@@ -74,11 +80,61 @@ public class ReservationService {
     // Actualizar una reserva
     public ReservationDTO updateReservation(Long id, ReservationDTO reservationDTO) {
         Reservation existingReservation = reservationDAO.findById(id);
-        if (existingReservation != null) {
-            // Logic to be applied
 
+        if (existingReservation != null) {
+            // === Update core reservation fields ===
+            existingReservation.setInDate(reservationDTO.getInDate());
+            existingReservation.setOutDate(reservationDTO.getOutDate());
+
+            try {
+                ReservationState newState = ReservationState.valueOf(reservationDTO.getState());
+                existingReservation.setStatus(newState);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid reservation state: " + reservationDTO.getState());
+            }
+
+            existingReservation.setRoom(roomDAO.findById(reservationDTO.getRoomId()));
+
+            // === Update guests ===
+            List<GuestDTO> incomingGuestDTOs = reservationDTO.getGuests();
+            List<GuestReservation> updatedGuestReservations = new ArrayList<>();
+
+            for (GuestDTO guestDTO : incomingGuestDTOs) {
+                Optional<Guest> optionalGuest = guestDAO.findByNIF(guestDTO.getNif());
+                Guest guest;
+
+                if (optionalGuest.isPresent()) {
+                    guest = optionalGuest.get();
+                } else {
+                    guest = new Guest();
+                    guest.setNif(guestDTO.getNif());
+                    guest.setTenant(tenantService.findById(guestDTO.getTenantId()));
+                }
+
+                guest.setName(guestDTO.getName());
+                guest.setLastname(guestDTO.getLastname());
+                guest.setEmail(guestDTO.getEmail());
+                guest.setPhone(guestDTO.getPhone());
+
+                guestDAO.save(guest);
+
+                // Create GuestReservation linking guest and reservation
+                GuestReservation guestReservation = new GuestReservation();
+                guestReservation.setGuest(guest);
+                guestReservation.setReservation(existingReservation);
+
+                updatedGuestReservations.add(guestReservation);
+            }
+
+            // Clear and set new guests 
+            existingReservation.getGuests().clear();
+            existingReservation.getGuests().addAll(updatedGuestReservations);
+
+            reservationDAO.update(existingReservation);
             return toDTO(existingReservation);
+
         }
+
         return null;
     }
 

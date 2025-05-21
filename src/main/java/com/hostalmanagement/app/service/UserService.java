@@ -79,6 +79,7 @@ public class UserService {
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User existingUser = userDAO.findById(id);
         if (existingUser != null) {
+
             Tenant tenant = tenantDAO.findById(userDTO.getTenant());
             if (tenant == null) {
                 throw new IllegalArgumentException("Tenant ID not found: " + userDTO.getTenant());
@@ -87,7 +88,7 @@ public class UserService {
             existingUser.setName(userDTO.getName());
             existingUser.setLastname(userDTO.getLastname());
             existingUser.setEmail(userDTO.getEmail());
-            existingUser.setRol(RolEnum.valueOf(userDTO.getRol()));
+            existingUser.setRol(RolEnum.valueOf(userDTO.getRol().toLowerCase()));
             existingUser.setTenant(tenant);
 
             userDAO.update(existingUser);
