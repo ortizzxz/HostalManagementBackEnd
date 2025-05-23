@@ -87,8 +87,9 @@ public class UserService {
             existingUser.setName(userDTO.getName());
             existingUser.setLastname(userDTO.getLastname());
             existingUser.setEmail(userDTO.getEmail());
-            existingUser.setRol(RolEnum.valueOf(userDTO.getRol()));
+            existingUser.setRol(RolEnum.valueOf(userDTO.getRol().toLowerCase()));
             existingUser.setTenant(tenant);
+            existingUser.setPassword(existingUser.getPassword()); // keep same password
 
             userDAO.update(existingUser);
             return toDTO(existingUser);

@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.hostalmanagement.app.DTO.GuestDTO;
-import com.hostalmanagement.app.DTO.GuestReservationDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
-import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.ReservationDAO;
 import com.hostalmanagement.app.dao.RoomDAO;
 import com.hostalmanagement.app.model.Guest;
@@ -20,6 +18,8 @@ import com.hostalmanagement.app.model.Reservation;
 import com.hostalmanagement.app.model.Reservation.ReservationState;
 import com.hostalmanagement.app.model.Room;
 import com.hostalmanagement.app.model.Tenant;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ReservationService {
@@ -73,15 +73,23 @@ public class ReservationService {
         return (reservation != null) ? toDTO(reservation) : null;
     }
 
-    // Actualizar una reserva
-    public ReservationDTO updateReservation(Long id, ReservationDTO reservationDTO) {
+    public ReservationDTO updateStatus(Long id, ReservationDTO reservationDTO) {
         Reservation existingReservation = reservationDAO.findById(id);
         if (existingReservation != null) {
-            // Logic to be applied
+            try {
+                // Safely parse and update the status
+                ReservationState newState = ReservationState.valueOf(reservationDTO.getState());
+                existingReservation.setStatus(newState);
+                reservationDAO.update(existingReservation);
 
-            return toDTO(existingReservation);
+                // Return the updated DTO
+                return toDTO(existingReservation);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid reservation status: " + reservationDTO.getState());
+            }
+        } else {
+            throw new EntityNotFoundException("Reservation with ID " + id + " not found");
         }
-        return null;
     }
 
     public boolean deleteReservation(Long id) {
@@ -99,7 +107,6 @@ public class ReservationService {
                 .stream()
                 .map(gr -> {
                     Guest g = gr.getGuest();
-                    TenantDTO tenant = tenantService.toDTO(g.getTenant());
                     return new GuestDTO(
                             g.getNIF(),
                             g.getName(),
@@ -130,7 +137,6 @@ public class ReservationService {
             throw new IllegalArgumentException("Invalid reservation state: " + reservationDTO.getState());
         }
 
-        // Fetch the room (you might already have this handled)
         Room room = roomDAO.findById(reservationDTO.getRoomId());
 
         // ReservationDTO To Entity
@@ -148,9 +154,8 @@ public class ReservationService {
                             guestReservationDTO.getPhone(),
                             room.getTenant());
 
-                    // Now create a new GuestReservation using the guest and the current reservation
-                    return new GuestReservation(guest, reseservation); // Make sure the reservation is correctly
-                                                                       // assigned
+                    //  create a new GuestReservation using the guest and the current reservation
+                    return new GuestReservation(guest, reseservation);  
                 })
                 .collect(Collectors.toList());
 

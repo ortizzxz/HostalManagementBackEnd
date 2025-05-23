@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +24,6 @@ import com.hostalmanagement.app.service.ReservationService;
 import com.hostalmanagement.app.service.TenantService;
 
 import jakarta.transaction.Transactional;
-
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -50,7 +51,7 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationDTO>> findAllReservations(Long tenantId){
+    public ResponseEntity<List<ReservationDTO>> findAllReservations(Long tenantId) {
         Tenant tenant = tenantService.findById(tenantId);
         List<ReservationDTO> reservations = reservationService.findAllReservations(tenant);
         return ResponseEntity.ok(reservations);
@@ -58,22 +59,33 @@ public class ReservationController {
 
     @GetMapping("/checkins")
     public ResponseEntity<List<CheckInOutDTO>> getAllCheckIns(Long tenantId) {
-        List<CheckInOutDTO> checkins = checkInOutService.findAllCheckInOuts(tenantId); 
+        List<CheckInOutDTO> checkins = checkInOutService.findAllCheckInOuts(tenantId);
 
         return ResponseEntity.ok(checkins);
     }
-    
 
     @PostMapping
     @Transactional
     public ResponseEntity<?> createReservation(@RequestBody ReservationDTO request) {
         // Create the reservation and save it
-        ReservationDTO reservationDTO = new ReservationDTO(null, request.getRoomId(), request.getInDate(), request.getOutDate(), request.getState(), request.getGuests(), request.getTenantId());
-        
+        ReservationDTO reservationDTO = new ReservationDTO(null, request.getRoomId(), request.getInDate(),
+                request.getOutDate(), request.getState(), request.getGuests(), request.getTenantId());
+
         // Call the service method to create the reservation and guest reservations
         guestReservationService.createGuestReservation(new GuestReservationDTO(request.getGuests(), reservationDTO));
 
         return ResponseEntity.ok("Reservation created successfully");
+    }
+
+    @PutMapping("/status/{id}")
+    @Transactional
+    public ResponseEntity<ReservationDTO> updateState(@PathVariable Long id, @RequestBody ReservationDTO request) {
+        ReservationDTO updated = reservationService.updateStatus(id, request);
+        if (updated != null) {
+            return ResponseEntity.ok(updated); // Return the updated DTO object
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

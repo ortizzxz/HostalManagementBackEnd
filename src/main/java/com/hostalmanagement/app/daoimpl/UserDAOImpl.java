@@ -14,7 +14,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Repository
-public class UserDAOImpl implements UserDAO{
+public class UserDAOImpl implements UserDAO {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -27,7 +27,7 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public List<User> findAll(Tenant tenant){
+    public List<User> findAll(Tenant tenant) {
         return entityManager.createQuery("FROM User u WHERE u.tenant like :tenant", User.class)
                 .setParameter("tenant", tenant)
                 .getResultList();
@@ -57,32 +57,35 @@ public class UserDAOImpl implements UserDAO{
     @Override
     @Transactional
     public void save(User user) {
-        // 
+        //
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-        // 
+        //
         entityManager.persist(user);
     }
 
-    @Override
     @Transactional
     public void update(User user) {
         User currentUser = findById(user.getId());
-    
-        if (user.getPassword() == null || user.getPassword().isEmpty()) { // si no se cambia la contraseña 
+
+        // Ensure password is carried over if not set
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
             user.setPassword(currentUser.getPassword());
-        } else {
+        } else if (!user.getPassword().startsWith("$2")) {
+            // Only encode if it's a raw password
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+
+        entityManager.merge(user);
     }
 
     @Override
     @Transactional
     public void remove(Long id) {
         User user = findById(id);
-        if (user != null){
+        if (user != null) {
             entityManager.remove(user);
         }
     }
-    
+
 }
