@@ -43,6 +43,17 @@ public class WageService {
                 .toList();
     }
 
+    public WageDTO findWageById(Long id) {
+        Wage existingWage = wageDAO.findById(id);
+
+        if (existingWage != null) {
+            WageDTO wageDTO = toDTO(existingWage);
+            return wageDTO;
+        } else {
+            throw new IllegalArgumentException("Wage not found by ID" + id);
+        }
+    }
+
     public List<WageDTO> findWagesByTenantId(Long tenantId) {
         return wageDAO.findByTenantId(tenantId)
                 .stream()
@@ -53,11 +64,20 @@ public class WageService {
     // Create a new Wage
     @Transactional
     public WageDTO createWage(WageDTO wageDTO) {
+        if (wageDTO.getUserDTO() == null || wageDTO.getUserDTO().getId() == null) {
+            throw new IllegalArgumentException("UserDTO and User ID must be provided");
+        }
         // Ensure the user exists before creating a Wage
         User user = userDAO.findById(wageDTO.getUserDTO().getId());
 
         if (user == null) {
             throw new IllegalArgumentException("User with ID " + wageDTO.getUserDTO().getId() + " does not exist.");
+        }
+
+        // Check if wage already exists for this user
+        Wage existingWage = wageDAO.findByUser(user);
+        if (existingWage != null) {
+            throw new IllegalArgumentException("Wage for user ID " + user.getId() + " already exists.");
         }
 
         // Convert WageDTO to Wage entity and set the User

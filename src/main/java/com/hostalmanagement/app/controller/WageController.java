@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/api/wages")
 @RestController
@@ -39,6 +40,15 @@ public class WageController {
         return ResponseEntity.ok(wages);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<WageDTO> getWageById(@PathVariable Long id) {
+        WageDTO wage = wageService.findWageById(id);
+        if (wage != null) {
+            return ResponseEntity.ok(wage);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<WageDTO> updateWage(@PathVariable Long id, @RequestBody WageDTO wageDTO) {
         WageDTO updatedWage = wageService.updateWage(id, wageDTO);
@@ -49,12 +59,16 @@ public class WageController {
     }
 
     @PostMapping
-    public ResponseEntity<WageDTO> createWage(@RequestBody WageDTO wageDTO) {
+    public ResponseEntity<?> createWage(@RequestBody WageDTO wageDTO) {
         try {
             WageDTO createdWage = wageService.createWage(wageDTO);
             return ResponseEntity.ok(createdWage);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            // Return 400 with the error message
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("error", e.getMessage()));
         }
     }
+
 }
