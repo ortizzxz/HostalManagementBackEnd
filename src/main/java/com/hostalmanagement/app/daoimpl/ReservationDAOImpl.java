@@ -2,17 +2,13 @@ package com.hostalmanagement.app.daoimpl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import com.hostalmanagement.app.DTO.GuestDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
-import com.hostalmanagement.app.DTO.TenantDTO;
 import com.hostalmanagement.app.dao.ReservationDAO;
 import com.hostalmanagement.app.model.Guest;
 import com.hostalmanagement.app.model.Reservation;
 import com.hostalmanagement.app.model.Tenant;
-import com.hostalmanagement.app.service.TenantService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -23,9 +19,6 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @PersistenceContext
     EntityManager entityManager;
-
-    @Autowired
-    private TenantService tenantService;
 
     @Override
     public Reservation findById(Long id) {

@@ -77,6 +77,28 @@ public class ReservationController {
         return ResponseEntity.ok("Reservation created successfully");
     }
 
+    @PostMapping("/checkins/update")
+    @Transactional
+    public ResponseEntity<String> updateCheckIn(@RequestBody CheckInOutDTO checkInOutDTO) {
+        checkInOutService.updateCheckIn(checkInOutDTO);
+        return ResponseEntity.ok("Check-in updated successfully");
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> updateReservation(
+            @PathVariable Long id,
+            @RequestBody ReservationDTO request) {
+
+        // Assuming your service has an update method that handles update logic:
+        ReservationDTO updated = reservationService.updateReservation(id, request);
+
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok("Reservation updated successfully");
+    }
     @PutMapping("/status/{id}")
     @Transactional
     public ResponseEntity<ReservationDTO> updateState(@PathVariable Long id, @RequestBody ReservationDTO request) {

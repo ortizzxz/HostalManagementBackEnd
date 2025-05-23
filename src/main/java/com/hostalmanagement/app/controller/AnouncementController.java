@@ -9,17 +9,14 @@ import com.hostalmanagement.app.service.TenantService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.function.EntityResponse;
 
 import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.DTO.AnouncementDTO;
 import com.hostalmanagement.app.config.SecurityConfig;
-import com.hostalmanagement.app.dao.AnouncementDAO;
 import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.service.AnouncementService;
 
@@ -29,7 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -43,6 +39,7 @@ public class AnouncementController {
     private final RoomController roomController;
     
     private final SecurityConfig securityConfig;
+    
     private final HostalManagementApplication hostalManagementApplication;
 
     @Autowired

@@ -6,16 +6,16 @@ public class CheckInOutDTO {
     private Long id;
     private ReservationDTO reservationDTO;
     private LocalDateTime inDate;
-    private LocalDateTime ouTime;
+    private LocalDateTime outTime;
     
     public CheckInOutDTO() {
     }
 
-    public CheckInOutDTO(Long id, ReservationDTO reservationDTO, LocalDateTime inDate, LocalDateTime ouTime) {
+    public CheckInOutDTO(Long id, ReservationDTO reservationDTO, LocalDateTime inDate, LocalDateTime outTime) {
         this.id = id;
         this.reservationDTO = reservationDTO;
         this.inDate = inDate;
-        this.ouTime = ouTime;
+        this.outTime = outTime;
     }
 
     public Long getId() {
@@ -42,12 +42,12 @@ public class CheckInOutDTO {
         this.inDate = inDate;
     }
 
-    public LocalDateTime getOuTime() {
-        return ouTime;
+    public LocalDateTime getOutTime() {
+        return outTime;
     }
 
-    public void setOuTime(LocalDateTime ouTime) {
-        this.ouTime = ouTime;
+    public void setOutTime(LocalDateTime outTime) {
+        this.outTime = outTime;
     }
 
     
