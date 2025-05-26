@@ -66,32 +66,35 @@ public class GuestReservationService {
     private Guest getOrCreateGuest(GuestDTO guestDTO) {
         // Step 1: Attempt to find the guest by NIF
         Optional<Guest> existingGuestOpt = guestDAO.findByNIF(guestDTO.getNif());
-    
-        // Step 2: If the guest exists, return the existing one
+
+        // Step 2: If the guest exists, return it
         if (existingGuestOpt.isPresent()) {
             return existingGuestOpt.get();
         }
-    
-        // Step 3: If the guest does not exist, create a new guest
-        // Ensure that the tenant is correctly set
-        Tenant tenant = tenantService.findById(guestDTO.getTenantId());  // Assuming you have a service to fetch the tenant by ID
-    
-        // Create the new Guest object
+
+        // Step 3: Validate that the tenant ID is present
+        if (guestDTO.getTenantId() == null) {
+            throw new IllegalArgumentException("Tenant ID must not be null for guest: " + guestDTO.getNif());
+        }
+
+        // Step 4: Load and validate the tenant
+        Tenant tenant = tenantService.findById(guestDTO.getTenantId());
+        if (tenant == null) {
+            throw new IllegalArgumentException("Tenant not found with ID: " + guestDTO.getTenantId());
+        }
+
+        // Step 5: Create and save new Guest
         Guest newGuest = new Guest(
-            guestDTO.getEmail(),
-            guestDTO.getLastname(),
-            guestDTO.getName(),
-            guestDTO.getNif(),
-            guestDTO.getPhone(),
-            tenant // Link the tenant here
+                guestDTO.getEmail(),
+                guestDTO.getLastname(),
+                guestDTO.getName(),
+                guestDTO.getNif(),
+                guestDTO.getPhone(),
+                tenant // Valid managed Tenant
         );
-    
-        // Step 4: Save the new guest in the database
-        guestDAO.save(newGuest);  // Save the new guest
-        return newGuest;  // Return the saved guest
+
+        return guestDAO.save(newGuest);
     }
-    
-    
 
     @Transactional
     public Reservation createGuestReservation(GuestReservationDTO dto) {
@@ -169,11 +172,11 @@ public class GuestReservationService {
         // Assuming guestDTO is a list of GuestDTOs, we'll retrieve the first guest from
         // the list
         GuestDTO guestDTO = guestReservationDTO.getGuestDTO().get(0); // Assuming there's always at least one guest
-    
+
         // Find the Guest entity by NIF
         Optional<Guest> guestOpt = guestDAO.findByNIF(guestDTO.getNif());
         Tenant tenant = tenantService.findById(guestDTO.getTenantId());
-    
+
         // Check if the guest is present, otherwise create a new one
         Guest guest;
         if (guestOpt.isPresent()) {
@@ -181,14 +184,15 @@ public class GuestReservationService {
         } else {
             // If guest not found, create a new one and persist it
             guest = new Guest(guestDTO.getEmail(), guestDTO.getLastname(), guestDTO.getName(), guestDTO.getNif(),
-                              guestDTO.getPhone(), tenant);
+                    guestDTO.getPhone(), tenant);
             guestDAO.save(guest); // Save the new guest in the database
         }
-    
-        // Find the Reservation entity by the Room ID (assuming this returns Reservation or null)
+
+        // Find the Reservation entity by the Room ID (assuming this returns Reservation
+        // or null)
         ReservationDTO reservationDTO = guestReservationDTO.getReservationDTO();
-        Reservation reservation = reservationDAO.findById(reservationDTO.getRoomId());  // Returns Reservation or null
-    
+        Reservation reservation = reservationDAO.findById(reservationDTO.getRoomId()); // Returns Reservation or null
+
         if (reservation != null) {
             // Return the new GuestReservation entity
             return new GuestReservation(guest, reservation);

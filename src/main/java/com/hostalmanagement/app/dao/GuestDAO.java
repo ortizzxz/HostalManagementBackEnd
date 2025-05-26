@@ -11,7 +11,7 @@ public interface GuestDAO {
     GuestDTO toGuestDTO(Guest guest);
     List<Guest> findAll();
 
-    void save(Guest guest);
+    Guest save(Guest guest);
     void update(Guest guest);
     void delete(String NIF);
 }

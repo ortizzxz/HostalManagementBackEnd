@@ -23,10 +23,11 @@ public class GuestDAOImpl implements GuestDAO {
     public Optional<Guest> findByNIF(String nif) {
         try {
             List<Guest> guests = entityManager.createQuery("FROM Guest g WHERE g.nif = :nif", Guest.class)
-                                              .setParameter("nif", nif)
-                                              .getResultList();
-    
-            // Return the first guest if the list is not empty, otherwise return Optional.empty()
+                    .setParameter("nif", nif)
+                    .getResultList();
+
+            // Return the first guest if the list is not empty, otherwise return
+            // Optional.empty()
             return guests.isEmpty() ? Optional.empty() : Optional.of(guests.get(0));
         } catch (Exception e) {
             // Log the exception or handle it as needed
@@ -34,7 +35,7 @@ public class GuestDAOImpl implements GuestDAO {
             return Optional.empty();
         }
     }
-    
+
     @Override
     public List<Guest> findAll() {
         return entityManager.createQuery("FROM Guest", Guest.class).getResultList();
@@ -42,8 +43,9 @@ public class GuestDAOImpl implements GuestDAO {
 
     @Override
     @Transactional
-    public void save(Guest guest) {
+    public Guest save(Guest guest) {
         entityManager.persist(guest);
+        return guest;
     }
 
     @Override
@@ -62,12 +64,11 @@ public class GuestDAOImpl implements GuestDAO {
     @Override
     public GuestDTO toGuestDTO(Guest guest) {
         return new GuestDTO(
-            guest.getNIF(),
-            guest.getName(),
-            guest.getLastname(),
-            guest.getEmail(),
-            guest.getPhone(),
-            guest.getTenant().getId()
-        );
+                guest.getNIF(),
+                guest.getName(),
+                guest.getLastname(),
+                guest.getEmail(),
+                guest.getPhone(),
+                guest.getTenant().getId());
     }
 }
