@@ -4,10 +4,11 @@ import com.hostalmanagement.app.model.User;
 import com.hostalmanagement.app.model.Wage;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WageDAO {
     Wage findById(Long id);
-    Wage findByUser(User user);
+    Optional<Wage> findByUser(User user);
     List<Wage> findAll();
     List<Wage> findByUserId(Long userId);
     List<Wage> findByTenantId(Long tenantId);

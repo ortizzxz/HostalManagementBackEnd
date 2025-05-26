@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class WageDAOImpl implements WageDAO {
@@ -23,12 +24,13 @@ public class WageDAOImpl implements WageDAO {
         return entityManager.find(Wage.class, id);
     }
 
-    @Override
-    public Wage findByUser(User user) {
-        return entityManager
+    public Optional<Wage> findByUser(User user) {
+        List<Wage> results = entityManager
                 .createQuery("FROM Wage w WHERE w.user = :user", Wage.class)
                 .setParameter("user", user)
-                .getSingleResult();
+                .getResultList();
+
+        return results.stream().findFirst();
     }
 
     @Override

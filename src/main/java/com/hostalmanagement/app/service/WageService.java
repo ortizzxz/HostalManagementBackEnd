@@ -8,6 +8,7 @@ import com.hostalmanagement.app.dao.UserDAO;
 import com.hostalmanagement.app.dao.WageDAO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,16 +68,16 @@ public class WageService {
         if (wageDTO.getUserDTO() == null || wageDTO.getUserDTO().getId() == null) {
             throw new IllegalArgumentException("UserDTO and User ID must be provided");
         }
+
         // Ensure the user exists before creating a Wage
         User user = userDAO.findById(wageDTO.getUserDTO().getId());
-
         if (user == null) {
             throw new IllegalArgumentException("User with ID " + wageDTO.getUserDTO().getId() + " does not exist.");
         }
 
         // Check if wage already exists for this user
-        Wage existingWage = wageDAO.findByUser(user);
-        if (existingWage != null) {
+        Optional<Wage> existingWage = wageDAO.findByUser(user);
+        if (existingWage.isPresent()) {
             throw new IllegalArgumentException("Wage for user ID " + user.getId() + " already exists.");
         }
 
@@ -91,6 +92,7 @@ public class WageService {
         return toDTO(wage);
     }
 
+    @Transactional
     public WageDTO updateWage(Long id, WageDTO wageDTO) {
         Wage existingWage = wageDAO.findById(id);
         if (existingWage == null)
@@ -103,8 +105,12 @@ public class WageService {
 
         // Optional: ensure you're updating the correct associated user
         if (wageDTO.getUserDTO() != null && wageDTO.getUserDTO().getId() != null) {
-            User user = userService.toEntity(wageDTO.getUserDTO());
+            User user = userDAO.findById(wageDTO.getUserDTO().getId());
+            if (user == null) {
+                throw new IllegalArgumentException("User with ID " + wageDTO.getUserDTO().getId() + " does not exist.");
+            }
             existingWage.setUser(user);
+
         }
 
         wageDAO.update(existingWage);
