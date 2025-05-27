@@ -21,6 +21,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Service
 public class UserService {
 
+    private static final String URL = "https://hostal-management-front-end.vercel.app/reset-password?token=";
+
     @Autowired
     private UserDAO userDAO;
 
@@ -180,15 +182,14 @@ public class UserService {
 
     // Make this method private or protected, and give it a different name
     private void sendPasswordResetEmailInternal(String toEmail, String token) {
-        String resetLink = "http://localhost:5173/reset-password?token=" + token;
-
-        String subject = "Password Reset Request";
-        String text = "Hello,\n\n"
-                + "You requested a password reset. Click the link below to reset your password:\n"
+        String resetLink = URL + token;
+        String subject = "Cambio de Contraseña";
+        String text = "Cordiales Saludos,\n\n"
+                + "Usted a solicitado un cambio de contraseña. Acceda al siguiente enlace para recuperarla\n"
                 + resetLink + "\n\n"
-                + "If you did not request this, please ignore this email.\n\n"
-                + "Best regards,\n"
-                + "Your App Team";
+                + "Si usted no ha realizado esta solicitud, por favor ignore este correo.\n\n"
+                + "Saludos,\n"
+                + "EasyHostal";
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
