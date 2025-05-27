@@ -1,18 +1,22 @@
 package com.hostalmanagement.app.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.hostalmanagement.app.DTO.UserDTO;
 import com.hostalmanagement.app.dao.TenantDAO;
 import com.hostalmanagement.app.dao.UserDAO;
 import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.model.User;
 import com.hostalmanagement.app.model.User.RolEnum;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class UserService {
@@ -28,6 +32,8 @@ public class UserService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private JavaMailSender mailSender;
 
     public UserDTO findUserById(Long id) {
         User user = userDAO.findById(id);
@@ -98,6 +104,22 @@ public class UserService {
         return null;
     }
 
+    public boolean changePassword(String email, String currentPassword, String newPassword) {
+        User user = userDAO.findByEmail(email);
+
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return false; // Current password does not match
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userDAO.update(user);
+        return true;
+    }
+
     public boolean deleteUser(Long id) {
         User existingUser = userDAO.findById(id);
         if (existingUser != null) {
@@ -127,6 +149,53 @@ public class UserService {
         }
 
         return jwtService.generateToken(user.getEmail(), user.getTenant().getId(), user.getRol().toString());
+    }
+
+    public boolean resetPassword(String token, String newPassword) {
+        User user = userDAO.findByResetToken(token);
+        if (user != null) {
+            if (user.getResetTokenExpiry().isAfter(LocalDateTime.now())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+                user.setResetToken(null);
+                user.setResetTokenExpiry(null);
+                userDAO.update(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean sendPasswordResetEmail(String email) {
+        User user = userDAO.findByEmail(email);
+        if (user != null) {
+            String token = UUID.randomUUID().toString();
+            user.setResetToken(token);
+            user.setResetTokenExpiry(LocalDateTime.now().plusHours(1));
+            userDAO.save(user);
+            // Call the internal email-sending method
+            sendPasswordResetEmailInternal(user.getEmail(), token);
+        }
+        return true;
+    }
+
+    // Make this method private or protected, and give it a different name
+    private void sendPasswordResetEmailInternal(String toEmail, String token) {
+        String resetLink = "http://localhost:5173/reset-password?token=" + token;
+
+        String subject = "Password Reset Request";
+        String text = "Hello,\n\n"
+                + "You requested a password reset. Click the link below to reset your password:\n"
+                + resetLink + "\n\n"
+                + "If you did not request this, please ignore this email.\n\n"
+                + "Best regards,\n"
+                + "Your App Team";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(text);
+
+        mailSender.send(message);
     }
 
 }

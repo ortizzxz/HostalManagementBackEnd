@@ -1,5 +1,7 @@
 package com.hostalmanagement.app.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,6 +38,9 @@ public class User {
     @ManyToOne(optional = false) // each user must belong to a tenant
     @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;
+
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
 
     public enum RolEnum {
         admin, recepcion, limpieza, mantenimiento, unknown
@@ -107,6 +112,22 @@ public class User {
 
     public void setTenant(Tenant tenant) {
         this.tenant = tenant;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 
     @Override

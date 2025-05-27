@@ -32,4 +32,21 @@ public class AuthController {
         // Return the token as the response body
         return ResponseEntity.ok(token);
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody UserDTO userDTO) {
+        boolean emailSent = userService.sendPasswordResetEmail(userDTO.getEmail());
+        // Always return success for security (do not reveal if email exists)
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody UserDTO userDTO) {
+        boolean success = userService.resetPassword(token, userDTO.getPassword());
+        if (!success) {
+            return ResponseEntity.badRequest().body("Invalid or expired token");
+        }
+        return ResponseEntity.ok().build();
+    }
+
 }

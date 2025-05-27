@@ -10,6 +10,7 @@ import com.hostalmanagement.app.model.User;
 @Repository
 public interface UserDAO {
     User findById(Long id);
+    User findByResetToken(String token);
     List<User> findAll(Tenant tenant);
     List<User> findByLastname(String lastname);
     User findByEmail(String email);  

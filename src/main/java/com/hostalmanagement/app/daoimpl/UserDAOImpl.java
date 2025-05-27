@@ -11,6 +11,7 @@ import com.hostalmanagement.app.model.User;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -64,18 +65,20 @@ public class UserDAOImpl implements UserDAO {
         entityManager.persist(user);
     }
 
+    private boolean isBCryptHash(String password) {
+        return password != null
+                && (password.startsWith("$2a$") || password.startsWith("$2b$") || password.startsWith("$2y$"));
+    }
+
     @Transactional
     public void update(User user) {
         User currentUser = findById(user.getId());
 
-        // Ensure password is carried over if not set
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             user.setPassword(currentUser.getPassword());
-        } else if (!user.getPassword().startsWith("$2")) {
-            // Only encode if it's a raw password
+        } else if (!isBCryptHash(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-
         entityManager.merge(user);
     }
 
@@ -85,6 +88,17 @@ public class UserDAOImpl implements UserDAO {
         User user = findById(id);
         if (user != null) {
             entityManager.remove(user);
+        }
+    }
+
+    @Override
+    public User findByResetToken(String token) {
+        try {
+            return entityManager.createQuery("FROM User u WHERE u.resetToken = :token", User.class)
+                    .setParameter("token", token)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
         }
     }
 

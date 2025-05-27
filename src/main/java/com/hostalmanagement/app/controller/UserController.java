@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.hostalmanagement.app.DTO.UserDTO;
 import com.hostalmanagement.app.HostalManagementApplication;
 import com.hostalmanagement.app.config.SecurityConfig;
 import com.hostalmanagement.app.model.Tenant;
 import com.hostalmanagement.app.service.TenantService;
 import com.hostalmanagement.app.service.UserService;
-
+import com.hostalmanagement.app.DTO.ChangePasswordRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -53,6 +54,22 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+            boolean success = userService.changePassword(request.getEmail(), request.getCurrentPassword(), request.getNewPassword());
+
+            if (success) {
+                return ResponseEntity.ok(Map.of("message", "Password changed successfully."));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "fake_password"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An error occurred while changing password."));
+        }
+    }
 
     // Buscar usuario por ID
     @GetMapping("/{id}")
@@ -79,7 +96,7 @@ public class UserController {
         }
     }
 
-    // Log in 
+    // Log in
     @PostMapping("/login")
     public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO userDTO, HttpServletResponse response) {
         try {
