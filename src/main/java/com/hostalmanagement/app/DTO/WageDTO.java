@@ -4,14 +4,14 @@ public class WageDTO {
     private long id;
     private UserDTO userDTO;
     private double hourRate;
-    private int weeklyHours;
+    private double weeklyHours;
     private double taxImposed;
     private long extraPayments;
 
     public WageDTO() {
     }
 
-    public WageDTO(Long id, UserDTO userDTO, double hourRate, int weeklyHours, double taxImposed, long extraPayments) {
+    public WageDTO(Long id, UserDTO userDTO, double hourRate, double weeklyHours, double taxImposed, long extraPayments) {
         this.id = id;
         this.userDTO = userDTO;
         this.hourRate = hourRate;
@@ -28,11 +28,11 @@ public class WageDTO {
         this.userDTO = userDTO;
     }
 
-    public int getWeeklyHours() {
+    public double getWeeklyHours() {
         return weeklyHours;
     }
 
-    public void setWeeklyHours(int weeklyHours) {
+    public void setWeeklyHours(double weeklyHours) {
         this.weeklyHours = weeklyHours;
     }
 

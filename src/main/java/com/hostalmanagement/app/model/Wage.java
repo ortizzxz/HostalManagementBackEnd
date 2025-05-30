@@ -24,7 +24,7 @@ public class Wage {
     private double hourRate;
 
     @Positive(message = "Las horas semanales deben ser mayores a cero")
-    private int weeklyHours;
+    private double weeklyHours;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "El impuesto debe ser cero o positivo")
     private double taxImposed;
@@ -35,7 +35,7 @@ public class Wage {
     public Wage() {}
 
     public Wage(User user, double hourRate,
-            int weeklyHours,
+            double weeklyHours,
             double taxImposed,
             long extraPayments) {
         this.user = user;
@@ -69,11 +69,11 @@ public class Wage {
         this.hourRate = hourRate;
     }
 
-    public int getWeeklyHours() {
+    public double getWeeklyHours() {
         return weeklyHours;
     }
 
-    public void setWeeklyHours(int weeklyHours) {
+    public void setWeeklyHours(double weeklyHours) {
         this.weeklyHours = weeklyHours;
     }
 

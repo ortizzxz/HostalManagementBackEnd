@@ -7,7 +7,6 @@ import com.hostalmanagement.app.DTO.CheckInOutDTO;
 import com.hostalmanagement.app.DTO.ReservationDTO;
 import com.hostalmanagement.app.dao.CheckInOutDAO;
 import com.hostalmanagement.app.model.CheckInOut;
-import com.hostalmanagement.app.model.Reservation;
 
 import jakarta.persistence.EntityNotFoundException;
 
