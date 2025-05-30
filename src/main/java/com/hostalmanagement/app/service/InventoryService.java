@@ -1,5 +1,7 @@
 package com.hostalmanagement.app.service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ public class InventoryService {
     public InventoryDTO createInventory(InventoryDTO inventoryDTO) {
         try {
             Inventory inventory = toEntity(inventoryDTO);
+            inventory.setLastUpdate(LocalDateTime.now());
             inventoryDAO.save(inventory);
             return toDTO(inventory);
         } catch (IllegalArgumentException e) {
@@ -34,8 +37,8 @@ public class InventoryService {
     }
 
     // Devuelve todos los inventarios
-    public List<InventoryDTO> findAllInventories() {
-        List<Inventory> inventories = inventoryDAO.findAll();
+    public List<InventoryDTO> findAllInventories(long tenantId) {
+        List<Inventory> inventories = inventoryDAO.findAll(tenantId);
         return inventories.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
@@ -49,7 +52,7 @@ public class InventoryService {
     public InventoryDTO updateInventory(Long id, InventoryDTO inventoryDTO) {
         Inventory existingInventory = inventoryDAO.findById(id);
         if (existingInventory != null) {
-            Tenant tenant = tenantDAO.findById(inventoryDTO.getTenant());  // Get tenant by tenantId from DTO
+            Tenant tenant = tenantDAO.findById(inventoryDTO.getTenant()); // Get tenant by tenantId from DTO
             if (tenant == null) {
                 throw new IllegalArgumentException("Tenant not found: " + inventoryDTO.getTenant());
             }
@@ -57,7 +60,7 @@ public class InventoryService {
             existingInventory.setAmount(inventoryDTO.getAmount());
             existingInventory.setWarningLevel(inventoryDTO.getWarningLevel());
             existingInventory.setLastUpdate(inventoryDTO.getLastUpdate());
-            existingInventory.setTenant(tenant);  // Set tenant association
+            existingInventory.setTenant(tenant); // Set tenant association
 
             inventoryDAO.update(existingInventory);
             return toDTO(existingInventory);
@@ -77,26 +80,26 @@ public class InventoryService {
     private InventoryDTO toDTO(Inventory inventory) {
         Long tenantId = inventory.getTenant() != null ? inventory.getTenant().getId() : null;
         return new InventoryDTO(
-            inventory.getId(),
-            inventory.getItem(), 
-            inventory.getAmount(), 
-            inventory.getWarningLevel(), 
-            inventory.getLastUpdate(),
-            tenantId  // Include tenantId in DTO
+                inventory.getId(),
+                inventory.getItem(),
+                inventory.getAmount(),
+                inventory.getWarningLevel(),
+                inventory.getLastUpdate(),
+                tenantId // Include tenantId in DTO
         );
     }
 
     private Inventory toEntity(InventoryDTO inventoryDTO) {
-        Tenant tenant = tenantDAO.findById(inventoryDTO.getTenant());  // Fetch tenant by tenantId
+        Tenant tenant = tenantDAO.findById(inventoryDTO.getTenant()); // Fetch tenant by tenantId
         if (tenant == null) {
             throw new IllegalArgumentException("Tenant not found: " + inventoryDTO.getTenant());
         }
         return new Inventory(
-            inventoryDTO.getItem(),
-            inventoryDTO.getAmount(),
-            inventoryDTO.getWarningLevel(),
-            inventoryDTO.getLastUpdate(),
-            tenant  // Set the tenant association
+                inventoryDTO.getItem(),
+                inventoryDTO.getAmount(),
+                inventoryDTO.getWarningLevel(),
+                inventoryDTO.getLastUpdate(),
+                tenant // Set the tenant association
         );
     }
 }

@@ -7,7 +7,7 @@ import com.hostalmanagement.app.model.Inventory;
 public interface InventoryDAO {
     Inventory findById(Long id);
     
-    List<Inventory> findAll();
+    List<Inventory> findAll(long tenantId);
     List<Inventory> findByKeyword(String item);
     List<Inventory> findByWarningLevel();
 

@@ -23,20 +23,22 @@ public class InventoryDAOImpl implements InventoryDAO{
     }
 
     @Override
-    public List<Inventory> findAll() {
-        return entityManager.createQuery("FROM Inventario i", Inventory.class).getResultList();
+    public List<Inventory> findAll(long tenantId) {
+        return entityManager.createQuery("FROM Inventory i WHERE i.tenant.id = :tenantId", Inventory.class)
+                        .setParameter("tenantId", tenantId)
+                        .getResultList();
     }
 
     @Override
     public List<Inventory> findByKeyword(String item) {
-        return entityManager.createQuery("FROM Inventario i WHERE i.item LIKE :item", Inventory.class)
+        return entityManager.createQuery("FROM Inventory i WHERE i.item LIKE :item", Inventory.class)
                 .setParameter("item", item)
                 .getResultList();
     }
 
     @Override
     public List<Inventory> findByWarningLevel() {
-        return entityManager.createQuery("FROM Inventario i where i.nivelCritico > i.cantidad", Inventory.class).getResultList();
+        return entityManager.createQuery("FROM Inventory i where i.nivelCritico > i.cantidad", Inventory.class).getResultList();
     }
 
     @Override
