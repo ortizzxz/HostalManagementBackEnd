@@ -4,7 +4,12 @@ import com.hostalmanagement.app.DTO.UserDTO;
 import com.hostalmanagement.app.service.JwtService;
 import com.hostalmanagement.app.service.UserService;
 import com.hostalmanagement.app.model.User;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,10 +39,15 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Map<String, Object>> forgotPassword(@RequestBody UserDTO userDTO) {
         boolean emailSent = userService.sendPasswordResetEmail(userDTO.getEmail());
-        // Always return success for security (do not reveal if email exists)
-        return ResponseEntity.ok().build();
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", emailSent);
+        if (!emailSent) {
+            response.put("message", "Failed to send email");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reset-password")
