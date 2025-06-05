@@ -1,5 +1,6 @@
 package com.hostalmanagement.app.daoimpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -28,11 +29,11 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     public List<Reservation> findAll(Tenant tenant) {
         return entityManager.createQuery(
-            "SELECT r FROM Reservation r WHERE r.room.tenant = :tenant", Reservation.class)
-            .setParameter("tenant", tenant)
-            .getResultList();
+                "SELECT r FROM Reservation r WHERE r.room.tenant = :tenant", Reservation.class)
+                .setParameter("tenant", tenant)
+                .getResultList();
     }
-    
+
     @Override
     public List<Reservation> findByConfirmed() {
         return entityManager.createQuery("from Reservation r where r.estado like :estado", Reservation.class)
@@ -56,10 +57,35 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @Override
     public Reservation findByRoom(Long roomId) {
-        return entityManager.createQuery("FROM Reservation R WHERE idHabitacion like :idHabitacion", Reservation.class)
+        return entityManager.createQuery("FROM Reservation R WHERE room like :idHabitacion", Reservation.class)
                 .setParameter("idHabitacion", roomId)
                 .getSingleResult();
     }
+
+@Override
+public Reservation findExistenceBetweenDate(Long roomId, Long tenantId, LocalDateTime inDate,
+        LocalDateTime outDate) {
+    List<Reservation> results = entityManager.createQuery(
+            "SELECT R FROM Reservation R " +
+                    "WHERE R.room.id = :roomId " +
+                    "AND R.room.tenant.id = :tenantId " +
+                    "AND R.inDate < :outDate " +
+                    "AND R.outDate > :inDate",
+            Reservation.class)
+            .setParameter("roomId", roomId)
+            .setParameter("tenantId", tenantId)
+            .setParameter("inDate", inDate)
+            .setParameter("outDate", outDate)
+            .getResultList();
+
+    System.out.println("Checking existing reservations overlapping: ");
+    System.out.println("RoomId: " + roomId + ", TenantId: " + tenantId + ", inDate: " + inDate + ", outDate: " + outDate);
+    System.out.println("Found reservations: " + results.size());
+    results.forEach(r -> System.out.println("Reservation: " + r.getId() + ", from " + r.getInDate() + " to " + r.getOutDate()));
+
+    return results.isEmpty() ? null : results.get(0);
+}
+
 
     @Override
     @Transactional
@@ -93,7 +119,7 @@ public class ReservationDAOImpl implements ReservationDAO {
                             g.getName(),
                             g.getLastname(),
                             g.getEmail(),
-                            g.getPhone(),g.getTenant().getId());
+                            g.getPhone(), g.getTenant().getId());
                 })
                 .toList();
 

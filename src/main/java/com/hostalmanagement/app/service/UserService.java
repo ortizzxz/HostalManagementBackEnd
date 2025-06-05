@@ -74,6 +74,17 @@ public class UserService {
     }
 
     public UserDTO createUser(UserDTO userDTO) {
+
+        try{
+            User existingUser = userDAO.findByEmail(userDTO.getEmail());
+
+            if(existingUser != null){
+            throw new IllegalArgumentException("email in use");
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
         try {
             User user = toEntity(userDTO);
             userDAO.save(user);
@@ -97,7 +108,11 @@ public class UserService {
             existingUser.setEmail(userDTO.getEmail());
             existingUser.setRol(RolEnum.valueOf(userDTO.getRol().toLowerCase()));
             existingUser.setTenant(tenant);
-            existingUser.setPassword(existingUser.getPassword()); // keep same password
+            if(existingUser.getPassword().equalsIgnoreCase(userDTO.getPassword())){
+                existingUser.setPassword(existingUser.getPassword()); // keep same password
+            }else{
+                existingUser.setPassword(userDTO.getPassword()); // keep same password
+            }
 
             userDAO.update(existingUser);
             return toDTO(existingUser);

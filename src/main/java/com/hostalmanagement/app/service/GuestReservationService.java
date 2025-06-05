@@ -55,6 +55,16 @@ public class GuestReservationService {
         ReservationDTO reservationDTO = dto.getReservationDTO();
         Room room = roomDAO.findById(reservationDTO.getRoomId());
 
+        Reservation existingReservation = reservationDAO.findExistenceBetweenDate(
+                room.getId(),
+                room.getTenant().getId(),
+                reservationDTO.getInDate(),
+                reservationDTO.getOutDate());
+
+        if (existingReservation != null) {
+            throw new IllegalStateException("Room is already reserved for the selected dates.");
+        }
+
         return new Reservation(
                 room,
                 reservationDTO.getInDate(),
@@ -98,29 +108,26 @@ public class GuestReservationService {
 
     @Transactional
     public Reservation createGuestReservation(GuestReservationDTO dto) {
-        // Step 1: Create and save the Reservation entity
+
+        if(dto.getReservationDTO().getInDate().isAfter(dto.getReservationDTO().getOutDate())){
+            throw new IllegalArgumentException("Out Date cannot be earlier than In Date");
+        }
+
+        // Step 1: Create reservation (includes conflict check)
         Reservation reservation = createReservationEntity(dto);
-        reservation = reservationJpaDAO.saveAndFlush(reservation); // Save and flush the reservation to get the saved
-                                                                   // entity
+        reservation = reservationJpaDAO.saveAndFlush(reservation);
 
-        final Reservation savedReservation = reservation; // Now this is effectively final to be used in lambda
-                                                          // expressions
-
-        // Step 2: Iterate over the guests and create Guest entities, linking them with
-        // the reservation
+        // Step 2: Link guests to reservation
+        final Reservation savedReservation = reservation;
         dto.getReservationDTO().getGuests().forEach(guestDTO -> {
-            // Step 2.1: Get or create a guest based on the provided guest data
             Guest guest = getOrCreateGuest(guestDTO);
-
-            // Step 2.2: Save the GuestReservation which links the guest with the
-            // reservation
             guestReservationDAO.save(new GuestReservation(guest, savedReservation));
         });
 
-        // Step 3: Create Check-in and Check-out records
+        // Step 3: Check-in/out records
         createCheckInOut(savedReservation);
 
-        // Step 4: Return the saved reservation
+        // Step 4: Return saved entity
         return savedReservation;
     }
 

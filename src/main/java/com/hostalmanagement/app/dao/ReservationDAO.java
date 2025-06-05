@@ -1,5 +1,6 @@
 package com.hostalmanagement.app.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.hostalmanagement.app.DTO.ReservationDTO;
@@ -15,6 +16,8 @@ public interface ReservationDAO {
     List<Reservation> findByCompleted();
 
     Reservation findByRoom(Long roomId);
+    Reservation findExistenceBetweenDate(Long roomId, Long tenantId, LocalDateTime inDate, LocalDateTime outDate);
+
 
     ReservationDTO toReservationDTO(Reservation reservation);
     void save (Reservation reservation);
