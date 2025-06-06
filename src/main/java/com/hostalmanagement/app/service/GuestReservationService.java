@@ -51,6 +51,12 @@ public class GuestReservationService {
     @Autowired
     private CheckInOutDAO checkInOutDAO;
 
+    @Autowired
+    PDFReportService pdfReportService;
+
+    @Autowired
+    EmailService emailService;
+
     private Reservation createReservationEntity(GuestReservationDTO dto) {
         ReservationDTO reservationDTO = dto.getReservationDTO();
         Room room = roomDAO.findById(reservationDTO.getRoomId());
@@ -109,7 +115,7 @@ public class GuestReservationService {
     @Transactional
     public Reservation createGuestReservation(GuestReservationDTO dto) {
 
-        if(dto.getReservationDTO().getInDate().isAfter(dto.getReservationDTO().getOutDate())){
+        if (dto.getReservationDTO().getInDate().isAfter(dto.getReservationDTO().getOutDate())) {
             throw new IllegalArgumentException("Out Date cannot be earlier than In Date");
         }
 
@@ -127,7 +133,17 @@ public class GuestReservationService {
         // Step 3: Check-in/out records
         createCheckInOut(savedReservation);
 
-        // Step 4: Return saved entity
+        // Step 4: mainventoryController
+        byte[] bill = pdfReportService.generateReservationBill(savedReservation);
+        String guestEmail = dto.getReservationDTO().getGuests().get(0).getEmail(); // Assuming at least one guest
+        emailService.sendEmailWithAttachment(
+                guestEmail,
+                "Su factura de Reserva",
+                "Gracias por su reserva. Debajo encontrará su factura.",
+                bill,
+                "reservation_bill.pdf");
+
+        // Step 5: Return saved entity
         return savedReservation;
     }
 

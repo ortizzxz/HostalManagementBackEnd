@@ -1,6 +1,9 @@
 package com.hostalmanagement.app.service;
 
 import com.hostalmanagement.app.DTO.RoomDTO;
+import com.hostalmanagement.app.model.Reservation;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -9,10 +12,16 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
+
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -67,4 +76,59 @@ public class PDFReportService {
         document.close();
         return out.toByteArray();
     }
+
+    public byte[] generateReservationBill(Reservation reservation) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(out);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        // 1. Agregar Logo
+        try {
+            ImageData logoData = ImageDataFactory.create("src/main/resources/static/EasyHostal.png");
+            Image logo = new Image(logoData).scaleToFit(100, 100);
+            document.add(logo);
+        } catch (IOException e) {
+            // Si el logo no está disponible, se omite
+        }
+
+        // 2. Título centrado
+        Paragraph title = new Paragraph("Factura de Reserva")
+                .setBold()
+                .setFontSize(18)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginBottom(10);
+        document.add(title);
+
+        // 3. Fecha y ID
+        document.add(new Paragraph("Fecha: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+        document.add(new Paragraph("ID de Reserva: " + reservation.getId()));
+        document.add(new Paragraph("\n"));
+
+        // 4. Datos de la reserva
+        document.add(new Paragraph("Check-in: " + formatDateTime(reservation.getInDate())));
+        document.add(new Paragraph("Check-out: " + formatDateTime(reservation.getOutDate())));
+        document.add(new Paragraph("Habitación: " + reservation.getRoom().getNumber()));
+        document.add(new Paragraph("Tarifa por noche: €" + reservation.getRoom().getBaseRate()));
+        document.add(new Paragraph("\n"));
+
+        // 5. Total en negrita
+        Paragraph total = new Paragraph("Total: €" + calculateTotal(reservation))
+                .setBold()
+                .setFontSize(14);
+        document.add(total);
+
+        document.close();
+        return out.toByteArray();
+    }
+
+    private String formatDateTime(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
+
+    private double calculateTotal(Reservation reservation) {
+        long days = ChronoUnit.DAYS.between(reservation.getInDate(), reservation.getOutDate());
+        return Math.max(days, 1) * reservation.getRoom().getBaseRate();
+    }
+
 }
