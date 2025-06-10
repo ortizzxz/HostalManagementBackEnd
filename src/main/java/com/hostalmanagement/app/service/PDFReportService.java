@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -84,12 +85,15 @@ public class PDFReportService {
         Document document = new Document(pdf);
 
         // 1. Agregar Logo
-        try {
-            ImageData logoData = ImageDataFactory.create("src/main/resources/static/EasyHostal.png");
-            Image logo = new Image(logoData).scaleToFit(100, 100);
-            document.add(logo);
+        try (InputStream is = getClass().getResourceAsStream("/static/EasyHostal.png")) {
+            if (is != null) {
+                byte[] imageBytes = is.readAllBytes();
+                ImageData logoData = ImageDataFactory.create(imageBytes);
+                Image logo = new Image(logoData).scaleToFit(100, 100);
+                document.add(logo);
+            } else {
+            }
         } catch (IOException e) {
-            // Si el logo no está disponible, se omite
         }
 
         // 2. Título centrado
