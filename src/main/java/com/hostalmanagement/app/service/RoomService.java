@@ -27,7 +27,7 @@ public class RoomService {
     }
 
     public List<RoomDTO> findAllRooms(Tenant tenant) {
-        List<Room> rooms = roomDAO.findAll(tenant);
+        List<Room> rooms = roomDAO.findAll(tenant.getId());
         return rooms.stream().map(this::toDTO).collect(Collectors.toList());
     }
 

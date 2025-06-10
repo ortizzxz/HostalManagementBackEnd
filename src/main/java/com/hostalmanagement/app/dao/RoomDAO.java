@@ -2,15 +2,13 @@ package com.hostalmanagement.app.dao;
 
 
 import com.hostalmanagement.app.model.Room;
-import com.hostalmanagement.app.model.Tenant;
-
 import java.util.List;
 
 
 public interface RoomDAO{
     Room findById(Long id);
     Room findByRoomNumber(Long id);
-    List<Room> findAll(Tenant tenant);
+    List<Room> findAll(Long tenantId);
     List<Room> findBetweenPrices(Double minPrice, Double maxPrice);
     List<Room> findAvailableRooms();
 

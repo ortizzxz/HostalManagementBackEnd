@@ -30,9 +30,9 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public List<Room> findAll(Tenant tenant) {
-        return entityManager.createQuery("from Room r WHERE r.tenant like :tenant", Room.class)
-                .setParameter("tenant", tenant)
+    public List<Room> findAll(Long tenantId) {
+        return entityManager.createQuery("from Room r WHERE r.tenant.id like :tenantId", Room.class)
+                .setParameter("tenantId", tenantId)
                 .getResultList();
     }
 
